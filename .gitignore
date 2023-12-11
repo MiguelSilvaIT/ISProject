@@ -398,3 +398,9 @@ FodyWeavers.xsd
 *.sln.iml
 *.cache
 somiod/ISProject/Properties/Settings.settings
+*.cache
+*.config
+*.settings
+*.cs
+*.cache
+somiod/.vs/somiod/v17/.suo
