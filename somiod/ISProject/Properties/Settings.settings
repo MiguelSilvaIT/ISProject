@@ -5,10 +5,9 @@
     <Setting Name="ConnStr" Type="(Connection string)" Scope="Application">
       <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
 &lt;SerializableConnectionString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
-  &lt;ConnectionString&gt;Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\IS\ISProject\somiod\ISProject\App_Data\SOMIOD_DB.mdf;Integrated Security=True&lt;/ConnectionString&gt;
-  &lt;ProviderName /&gt;
+  &lt;ConnectionString&gt;Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename="C:\Users\migui\Documents\Miguel Silva\Uni\3_Ano\IS\Projeto\ISProject\somiod\ISProject\App_Data\SOMIOD_DB.mdf";Integrated Security=True&lt;/ConnectionString&gt;
 &lt;/SerializableConnectionString&gt;</DesignTimeValue>
-      <Value Profile="(Default)">Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\IS\ISProject\somiod\ISProject\App_Data\SOMIOD_DB.mdf;Integrated Security=True</Value>
+      <Value Profile="(Default)">Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename="C:\Users\migui\Documents\Miguel Silva\Uni\3_Ano\IS\Projeto\ISProject\somiod\ISProject\App_Data\SOMIOD_DB.mdf";Integrated Security=True</Value>
     </Setting>
   </Settings>
 </SettingsFile>

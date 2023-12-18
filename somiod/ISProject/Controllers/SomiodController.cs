@@ -1,10 +1,17 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Runtime.InteropServices;
+using System.Runtime.Remoting.Messaging;
 using System.Web;
 using System.Web.Http;
+using System.Web.UI.WebControls.WebParts;
 using System.Xml;
 using ISProject.Models;
 
@@ -114,6 +121,7 @@ namespace ISProject.Controllers
             return applications;
         }
 
+        [Route("{name}")]
         public IHttpActionResult GetApplication(String name)
         {
             Application application = new Application();
@@ -164,7 +172,6 @@ namespace ISProject.Controllers
         [Route("")]
         public IHttpActionResult PostApplication()
         {
-
             SqlConnection sqlConnection = null;
             string queryString = "INSERT INTO application (name, creation_dt) VALUES (@name, @creation_dt);";
 
@@ -509,8 +516,8 @@ namespace ISProject.Controllers
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine(ex.ToString());
-                return BadRequest(ex.Message);
+                // Log or handle the exception appropriately
+                throw;
             }
 
             if (data.Count() > 0)
@@ -578,8 +585,8 @@ namespace ISProject.Controllers
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine(ex.ToString());
-                return BadRequest(ex.Message);
+                // Log or handle the exception appropriately
+                throw;
             }
 
             if (data.id != 0)
@@ -690,6 +697,9 @@ namespace ISProject.Controllers
         }
 
         #endregion
+
+
+
 
     }
 }
