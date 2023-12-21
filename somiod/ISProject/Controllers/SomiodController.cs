@@ -648,7 +648,248 @@ namespace ISProject.Controllers
 
         #endregion Subscriptions
 
+        #region Data
 
+        //Get all data from 1 container
+        [HttpGet]
+        [Route("{appName}/{containerName}/data")]
+        public IHttpActionResult GetALLData(string appName, string containerName)
+        {
+            List<Data> data = new List<Data>();
+            int containerID = -1;
+            
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    string getContainer = "SELECT id FROM container WHERE name = @containerName and parent = (SELECT id FROM application WHERE name = @appName)";
+
+                    using (SqlCommand command = new SqlCommand(getContainer, conn))
+                    {
+                        command.Parameters.AddWithValue("@appName", appName);
+                        command.Parameters.AddWithValue("@containerName", containerName);
+
+                        using (SqlDataReader reader1 = command.ExecuteReader())
+                        {
+                            if (reader1.Read())
+                            {
+                                containerID = reader1.IsDBNull(0) ? -1 : reader1.GetInt32(0);
+                            }
+                        }
+                    }
+
+                    if (containerID != -1)
+                    {
+                        string getDataQuery = "SELECT * FROM data WHERE parent = @id";
+
+                        using (SqlCommand command = new SqlCommand(getDataQuery, conn))
+                        {
+                            command.Parameters.AddWithValue("@id", containerID);
+
+                            using (SqlDataReader dataReader = command.ExecuteReader())
+                            {
+                                while (dataReader.Read())
+                                {
+                                    Data d = new Data
+                                    {
+                                        id = (int)dataReader["id"],
+                                        name = (string)dataReader["name"],
+                                        content = (string)dataReader["content"],
+                                        creation_dt = (DateTime)dataReader["creation_dt"],
+                                        parent = (int)dataReader["parent"]
+                                    };
+                                    data.Add(d);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log or handle the exception appropriately
+                throw;
+            }
+
+            if (data.Count() > 0)
+            {
+                return Ok(data);
+            }
+            return BadRequest("Error retrieving data");
+        }
+
+        [HttpGet]
+        [Route("{appName}/{containerName}/data/{dataName}")]
+        public IHttpActionResult GetData(string appName, string containerName, string dataName) {
+            Data data = new Data();
+            int containerID = -1;
+
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    string getContainer = "SELECT id FROM container WHERE name = @containerName and parent = (SELECT id FROM application WHERE name = @appName)";
+
+                    using (SqlCommand command = new SqlCommand(getContainer, conn))
+                    {
+                        command.Parameters.AddWithValue("@appName", appName);
+                        command.Parameters.AddWithValue("@containerName", containerName);
+
+                        using (SqlDataReader reader1 = command.ExecuteReader())
+                        {
+                            if (reader1.Read())
+                            {
+                                containerID = reader1.IsDBNull(0) ? -1 : reader1.GetInt32(0);
+                            }
+                        }
+                    }
+
+                    if (containerID != -1)
+                    {
+                        string getDataQuery = "SELECT * FROM data WHERE parent = @id AND name = @dataName";
+
+                        using (SqlCommand dataCommand = new SqlCommand(getDataQuery, conn))
+                        {
+                            dataCommand.Parameters.AddWithValue("@id", containerID);
+                            dataCommand.Parameters.AddWithValue("@dataName", dataName);
+
+                            using (SqlDataReader dataReader = dataCommand.ExecuteReader())
+                            {
+                                while (dataReader.Read())
+                                {
+                                    Data d = new Data
+                                    {
+                                        id = (int)dataReader["id"],
+                                        content = (string)dataReader["content"],
+                                        creation_dt = (DateTime)dataReader["creation_dt"],
+                                        parent = (int)dataReader["parent"]
+                                    };
+                                    data = d;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log or handle the exception appropriately
+                throw;
+            }
+
+            if (data.id != 0)
+            {
+                return Ok(data);
+            }
+            return BadRequest();
+        }
+
+        public IHttpActionResult PostData(string appName, string containerName, string dataName, string dataContent)
+        {
+            int containerID= -1;
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    string getContainer = "SELECT id FROM container WHERE name = @containerName and parent = (SELECT id FROM application WHERE name = @appName)";
+
+                    using (SqlCommand command = new SqlCommand(getContainer, conn))
+                    {
+                        command.Parameters.AddWithValue("@appName", appName);
+                        command.Parameters.AddWithValue("@containerName", containerName);
+
+                        using (SqlDataReader reader1 = command.ExecuteReader())
+                        {
+                            if (reader1.Read())
+                            {
+                                containerID = reader1.IsDBNull(0) ? -1 : reader1.GetInt32(0);
+                            }
+                        }
+                    }
+
+                    if (containerID != -1)
+                    {
+
+                        string createData = "INSERT INTO data (name, content, creation_dt, parent) VALUES (@dataName, @content, @creation_dt, @parent)";
+                        SqlCommand command = new SqlCommand(createData, conn);
+
+                        command.Parameters.AddWithValue("@dataName", dataName);
+                        command.Parameters.AddWithValue("@content", dataContent);
+                        command.Parameters.AddWithValue("@creation_dt", DateTime.Now);
+                        command.Parameters.AddWithValue("@parent", containerID);
+
+                        SqlDataReader reader = command.ExecuteReader();
+
+                        return Ok("Data created");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.ToString());
+                return BadRequest(ex.Message);
+            }
+            return BadRequest();
+        }
+
+        [HttpDelete]
+        [Route("{appName}/{containerName}/data/{dataName}")]
+        public IHttpActionResult DeleteData(string appName, string containerName, string dataName) {
+            int containerID = -1;
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    string getcontainerid = "SELECT id FROM container WHERE parent = (SELECT id FROM application WHERE name = @appName) AND name = @containerName";
+
+                    using (SqlCommand command = new SqlCommand(getcontainerid, conn))
+                    {
+                        command.Parameters.AddWithValue("@appName", appName);
+                        command.Parameters.AddWithValue("@containerName", containerName);
+
+                        using(SqlDataReader reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                containerID = reader.IsDBNull(0) ? -1 : reader.GetInt32(0);
+                            }
+                        }
+                    }
+
+                    if (containerID != -1)
+                    {
+                        string deleteData = "DELETE FROM data WHERE name = @dataName";
+
+                        using (SqlCommand command = new SqlCommand(deleteData, conn))
+                        {
+                            command.Parameters.AddWithValue("@dataName", dataName);
+
+                            SqlDataReader reader = command.ExecuteReader();
+
+                            return Ok("Data deleted");
+                        }
+                    }
+
+                }
+            } catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.ToString());
+                return BadRequest(ex.Message);
+            }
+            return BadRequest();
+        }
+
+        #endregion
 
 
     }
