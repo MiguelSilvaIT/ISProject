@@ -6,11 +6,15 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Web;
 using System.Web.Http;
+using System.Web.UI.WebControls;
 using System.Xml;
 using System.Xml.Linq;
+using System.Xml.Serialization;
 using ISProject.Models;
+using Newtonsoft.Json.Linq;
 
 
 namespace ISProject.Controllers
@@ -129,13 +133,12 @@ namespace ISProject.Controllers
             return applications;
         }
 
-        public IHttpActionResult GetApplication(String name)
+        public IHttpActionResult GetApplication(String appName)
         {
-            
-            
-            
-            
-            Application application = new Application();
+
+
+
+            Application app = new Application();
             SqlConnection conn = null;
             string queryString =
             "SELECT * FROM application WHERE name = @name;";
@@ -146,7 +149,7 @@ namespace ISProject.Controllers
                 conn.Open();
 
                 SqlCommand command = new SqlCommand(queryString, conn);
-                command.Parameters.AddWithValue("@name", name);
+                command.Parameters.AddWithValue("@name", appName);
 
                 SqlDataReader reader = command.ExecuteReader();
 
@@ -160,12 +163,32 @@ namespace ISProject.Controllers
                         creation_dt = (DateTime)reader["creation_dt"]
 
                     };
-                    application = a;
+                    app = a;
 
                 }
                 reader.Close();
 
-                return Ok(application);
+                //Create XML
+                XmlDocument doc = new XmlDocument();
+                XmlElement root = doc.CreateElement("Application");
+                doc.AppendChild(root);
+                XmlElement id = doc.CreateElement("id");
+                id.InnerText = app.id.ToString();
+                XmlElement name = doc.CreateElement("name");
+                name.InnerText = app.name;
+                XmlElement creation_date = doc.CreateElement("creation_date");
+                creation_date.InnerText = app.creation_dt.ToString();
+                
+                root.AppendChild(id);
+                root.AppendChild(name);
+                root.AppendChild(creation_date);
+
+                string xmlOutput = doc.OuterXml;
+
+
+
+                return Ok(xmlOutput);
+
 
             }
 
