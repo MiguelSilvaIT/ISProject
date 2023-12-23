@@ -414,6 +414,11 @@ namespace ISProject.Controllers
         {
 
             SqlConnection sqlConnection = null;
+
+
+
+
+
             string queryString = "INSERT INTO container (name, creation_dt, parent) VALUES (@name, @creation_dt, (SELECT id FROM application WHERE name = @appName));";
 
             var bodyStream = new StreamReader(HttpContext.Current.Request.InputStream);
@@ -425,7 +430,7 @@ namespace ISProject.Controllers
             doc.LoadXml(xml);
 
 
-            XmlNode applicationName = doc.SelectSingleNode("/Application/name");
+            XmlNode containerName = doc.SelectSingleNode("/Container/name");
 
 
             try
@@ -434,7 +439,7 @@ namespace ISProject.Controllers
                 sqlConnection.Open();
 
                 SqlCommand command = new SqlCommand(queryString, sqlConnection);
-                command.Parameters.AddWithValue("@name", applicationName.InnerText);
+                command.Parameters.AddWithValue("@name", containerName.InnerText);
                 command.Parameters.AddWithValue("@appName", appName);
                 command.Parameters.AddWithValue("@creation_dt", DateTime.Now);
                 SqlDataReader reader = command.ExecuteReader();
