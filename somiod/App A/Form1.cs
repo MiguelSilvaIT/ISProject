@@ -1,22 +1,13 @@
-﻿using RestSharp.Authenticators;
-using RestSharp;
-using ISProject.Models;
+﻿using RestSharp;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-
 using System.Data.SqlClient;
-using System.IO;
-using System.Web;
-using System.Xml;
-using static System.Net.Mime.MediaTypeNames;
-using System.Web.UI.WebControls;
+using uPLibrary.Networking.M2Mqtt;
+using uPLibrary.Networking.M2Mqtt.Messages;
+using System.Net;
+using System.Collections.Generic;
+using System.Text;
 
 namespace App_A
 {
@@ -29,6 +20,9 @@ namespace App_A
         string connectionString =
         System.Configuration.ConfigurationManager.ConnectionStrings["App_A.Properties.Settings.ConnString"].ConnectionString;
 
+        MqttClient mClient = null;
+        List<string> mStrApp = new List<string>();
+        List<string> mStrContainer = new List<string>();
 
         public Form1()
         {
@@ -112,14 +106,32 @@ namespace App_A
                 sqlConnection.Close();
             }
 
+            //Topicos
+            try
+            {
+                using (sqlConnection = new SqlConnection(connectionString))
+                {
+                    string getApps = "SELECT name FROM application";
 
-            
+                    SqlCommand command = new SqlCommand(getApps, sqlConnection);
+                    sqlConnection.Open();
+                    SqlDataReader reader = command.ExecuteReader();
 
+                    while (reader.Read())
+                    {
+                        mStrApp.Add((string)reader["name"]);
 
+                    }
+                    appDrpDown.DataSource = mStrApp;
+                    reader.Close();
+                    sqlConnection.Close();
+                }
+            }
+            catch (Exception)
+            {
 
-
-
-
+                throw;
+            }
         }
 
         private void submit_application_Click(object sender, EventArgs e)
@@ -154,6 +166,81 @@ namespace App_A
             var response = client.Execute(request);
             MessageBox.Show("Status Code: " + response.StatusCode + "\n" +
                             "Content: " + response.Content);
+        }
+
+        private void ConnectBTN_Click(object sender, EventArgs e)
+        {
+            mClient = new MqttClient(IPAddress.Parse(IPAddresstxt.Text));
+            mClient.Connect(Guid.NewGuid().ToString());
+            if (!mClient.IsConnected)
+            {
+                Console.WriteLine("Error connecting to message broker...");
+                return;
+            }
+            MessageBox.Show("Connected");
+        }
+
+        void client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
+        {
+            messageBoxTXT.Text = Encoding.UTF8.GetString(e.Message) + "on topic" + e.Topic;
+        }
+
+        private void SubBTN_Click(object sender, EventArgs e)
+        {
+            // Check if any item is selected in the ComboBox
+            if (TopicDrpDown.SelectedItem != null)
+            {
+                byte[] qosLevel = { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE };
+
+                // Create an array of topics
+                string[] topics = { TopicDrpDown.SelectedItem.ToString() };
+
+                // Subscribe to the topic with the specified QoS levels
+                mClient.Subscribe(topics, qosLevel);
+                MessageBox.Show("Subscribed to: " + topics[0]);
+            }
+            else
+            {
+                // Handle the case when no item is selected
+                MessageBox.Show("Please select a topic before subscribing.");
+            }
+        }
+
+        private void UnsubBTN_Click(object sender, EventArgs e)
+        {
+            if (mClient != null)
+            {
+                string[] topic = { TopicDrpDown.SelectedItem.ToString() };
+                mClient.Unsubscribe(topic); //Put this in a button to see notif!
+                return;
+            }
+            MessageBox.Show("There is no connection created");
+        }
+
+        private void getTopicsBTN_Click(object sender, EventArgs e)
+        {
+            string appName = appDrpDown.SelectedItem.ToString();
+            mStrContainer.Clear();
+            TopicDrpDown.DataSource = null;
+            TopicDrpDown.Items.Clear();
+            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+            {
+                string getContainers = "SELECT name FROM container WHERE parent = (SELECT id FROM application WHERE name = @name)";
+
+                SqlCommand command = new SqlCommand(getContainers, sqlConnection);
+                command.Parameters.AddWithValue("@name", appName);
+
+                sqlConnection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    mStrContainer.Add((string)reader["name"]);
+                }
+                TopicDrpDown.DataSource = mStrContainer;
+                reader.Close();
+                sqlConnection.Close();
+            }
         }
     }
 }
