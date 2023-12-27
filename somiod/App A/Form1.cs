@@ -106,7 +106,7 @@ namespace App_A
                 sqlConnection.Close();
             }
 
-            //Topicos
+            //Applications
             try
             {
                 using (sqlConnection = new SqlConnection(connectionString))
@@ -182,14 +182,44 @@ namespace App_A
 
         void client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
         {
-            messageBoxTXT.Text = Encoding.UTF8.GetString(e.Message) + "on topic" + e.Topic;
+            MessageBox.Show("Message Received");
+
+            // Use BeginInvoke to execute the UI update on the UI thread
+            BeginInvoke(new Action(() =>
+            {
+                string conteudo = Encoding.UTF8.GetString(e.Message);
+                char entrada = conteudo[0];
+                conteudo = conteudo.Substring(1);
+
+                switch (entrada)
+                {
+                    case 'E':
+                        estadoTXT.Text = conteudo;
+                        break;
+
+                    case 'V':
+                        volumeTXT.Text = conteudo;
+                        break;
+
+                    case 'C':
+                        canalTXT.Text = conteudo;
+                        break;
+
+                    default:
+                        MessageBox.Show(Encoding.UTF8.GetString(e.Message) + "on topic" + e.Topic);
+                        break;
+                }
+            }));
         }
+
 
         private void SubBTN_Click(object sender, EventArgs e)
         {
             // Check if any item is selected in the ComboBox
             if (TopicDrpDown.SelectedItem != null)
             {
+                mClient.MqttMsgPublishReceived += client_MqttMsgPublishReceived;
+
                 byte[] qosLevel = { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE };
 
                 // Create an array of topics

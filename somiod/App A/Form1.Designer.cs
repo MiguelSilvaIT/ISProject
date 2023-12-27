@@ -30,10 +30,10 @@
         {
             this.label1 = new System.Windows.Forms.Label();
             this.labelEstado = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.estadoTXT = new System.Windows.Forms.TextBox();
+            this.canalTXT = new System.Windows.Forms.TextBox();
             this.labelCanal = new System.Windows.Forms.Label();
-            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.volumeTXT = new System.Windows.Forms.TextBox();
             this.labelVolume = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.submit_container = new System.Windows.Forms.Button();
@@ -52,8 +52,6 @@
             this.appDrpDown = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
             this.getTopicsBTN = new System.Windows.Forms.Button();
-            this.messageBoxTXT = new System.Windows.Forms.TextBox();
-            this.label7 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -79,21 +77,23 @@
             this.labelEstado.TabIndex = 1;
             this.labelEstado.Text = "Estado";
             // 
-            // textBox1
+            // estadoTXT
             // 
-            this.textBox1.Location = new System.Drawing.Point(63, 89);
-            this.textBox1.Margin = new System.Windows.Forms.Padding(2);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(76, 20);
-            this.textBox1.TabIndex = 2;
+            this.estadoTXT.Location = new System.Drawing.Point(63, 89);
+            this.estadoTXT.Margin = new System.Windows.Forms.Padding(2);
+            this.estadoTXT.Name = "estadoTXT";
+            this.estadoTXT.ReadOnly = true;
+            this.estadoTXT.Size = new System.Drawing.Size(76, 20);
+            this.estadoTXT.TabIndex = 2;
             // 
-            // textBox2
+            // canalTXT
             // 
-            this.textBox2.Location = new System.Drawing.Point(63, 124);
-            this.textBox2.Margin = new System.Windows.Forms.Padding(2);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(76, 20);
-            this.textBox2.TabIndex = 4;
+            this.canalTXT.Location = new System.Drawing.Point(63, 124);
+            this.canalTXT.Margin = new System.Windows.Forms.Padding(2);
+            this.canalTXT.Name = "canalTXT";
+            this.canalTXT.ReadOnly = true;
+            this.canalTXT.Size = new System.Drawing.Size(76, 20);
+            this.canalTXT.TabIndex = 4;
             // 
             // labelCanal
             // 
@@ -105,13 +105,14 @@
             this.labelCanal.TabIndex = 3;
             this.labelCanal.Text = "Canal";
             // 
-            // textBox3
+            // volumeTXT
             // 
-            this.textBox3.Location = new System.Drawing.Point(63, 167);
-            this.textBox3.Margin = new System.Windows.Forms.Padding(2);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(76, 20);
-            this.textBox3.TabIndex = 6;
+            this.volumeTXT.Location = new System.Drawing.Point(63, 167);
+            this.volumeTXT.Margin = new System.Windows.Forms.Padding(2);
+            this.volumeTXT.Name = "volumeTXT";
+            this.volumeTXT.ReadOnly = true;
+            this.volumeTXT.Size = new System.Drawing.Size(76, 20);
+            this.volumeTXT.TabIndex = 6;
             // 
             // labelVolume
             // 
@@ -131,7 +132,7 @@
             this.groupBox1.Controls.Add(this.submit_application);
             this.groupBox1.Controls.Add(this.inputAppName);
             this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Location = new System.Drawing.Point(23, 234);
+            this.groupBox1.Location = new System.Drawing.Point(24, 226);
             this.groupBox1.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(2);
@@ -230,7 +231,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(592, 77);
+            this.label5.Location = new System.Drawing.Point(471, 174);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(45, 13);
             this.label5.TabIndex = 11;
@@ -239,7 +240,7 @@
             // TopicDrpDown
             // 
             this.TopicDrpDown.FormattingEnabled = true;
-            this.TopicDrpDown.Location = new System.Drawing.Point(552, 93);
+            this.TopicDrpDown.Location = new System.Drawing.Point(428, 190);
             this.TopicDrpDown.Name = "TopicDrpDown";
             this.TopicDrpDown.Size = new System.Drawing.Size(121, 21);
             this.TopicDrpDown.TabIndex = 12;
@@ -247,7 +248,7 @@
             // SubBTN
             // 
             this.SubBTN.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
-            this.SubBTN.Location = new System.Drawing.Point(529, 120);
+            this.SubBTN.Location = new System.Drawing.Point(410, 217);
             this.SubBTN.Name = "SubBTN";
             this.SubBTN.Size = new System.Drawing.Size(75, 23);
             this.SubBTN.TabIndex = 13;
@@ -258,7 +259,7 @@
             // UnsubBTN
             // 
             this.UnsubBTN.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.UnsubBTN.Location = new System.Drawing.Point(610, 120);
+            this.UnsubBTN.Location = new System.Drawing.Point(491, 217);
             this.UnsubBTN.Name = "UnsubBTN";
             this.UnsubBTN.Size = new System.Drawing.Size(75, 23);
             this.UnsubBTN.TabIndex = 14;
@@ -269,7 +270,7 @@
             // appDrpDown
             // 
             this.appDrpDown.FormattingEnabled = true;
-            this.appDrpDown.Location = new System.Drawing.Point(395, 93);
+            this.appDrpDown.Location = new System.Drawing.Point(428, 93);
             this.appDrpDown.Name = "appDrpDown";
             this.appDrpDown.Size = new System.Drawing.Size(121, 21);
             this.appDrpDown.TabIndex = 15;
@@ -277,7 +278,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(425, 77);
+            this.label6.Location = new System.Drawing.Point(457, 77);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(59, 13);
             this.label6.TabIndex = 16;
@@ -285,7 +286,7 @@
             // 
             // getTopicsBTN
             // 
-            this.getTopicsBTN.Location = new System.Drawing.Point(395, 120);
+            this.getTopicsBTN.Location = new System.Drawing.Point(450, 120);
             this.getTopicsBTN.Name = "getTopicsBTN";
             this.getTopicsBTN.Size = new System.Drawing.Size(75, 23);
             this.getTopicsBTN.TabIndex = 17;
@@ -293,30 +294,11 @@
             this.getTopicsBTN.UseVisualStyleBackColor = true;
             this.getTopicsBTN.Click += new System.EventHandler(this.getTopicsBTN_Click);
             // 
-            // messageBoxTXT
-            // 
-            this.messageBoxTXT.Location = new System.Drawing.Point(386, 255);
-            this.messageBoxTXT.Multiline = true;
-            this.messageBoxTXT.Name = "messageBoxTXT";
-            this.messageBoxTXT.Size = new System.Drawing.Size(209, 99);
-            this.messageBoxTXT.TabIndex = 18;
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(392, 234);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(108, 13);
-            this.label7.TabIndex = 19;
-            this.label7.Text = "Messangem recebida";
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(697, 463);
-            this.Controls.Add(this.label7);
-            this.Controls.Add(this.messageBoxTXT);
             this.Controls.Add(this.getTopicsBTN);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.appDrpDown);
@@ -328,11 +310,11 @@
             this.Controls.Add(this.label4);
             this.Controls.Add(this.ConnectBTN);
             this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.textBox3);
+            this.Controls.Add(this.volumeTXT);
             this.Controls.Add(this.labelVolume);
-            this.Controls.Add(this.textBox2);
+            this.Controls.Add(this.canalTXT);
             this.Controls.Add(this.labelCanal);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.estadoTXT);
             this.Controls.Add(this.labelEstado);
             this.Controls.Add(this.label1);
             this.Margin = new System.Windows.Forms.Padding(2);
@@ -350,10 +332,10 @@
 
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label labelEstado;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox estadoTXT;
+        private System.Windows.Forms.TextBox canalTXT;
         private System.Windows.Forms.Label labelCanal;
-        private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.TextBox volumeTXT;
         private System.Windows.Forms.Label labelVolume;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button submit_container;
@@ -372,8 +354,6 @@
         private System.Windows.Forms.ComboBox appDrpDown;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Button getTopicsBTN;
-        private System.Windows.Forms.TextBox messageBoxTXT;
-        private System.Windows.Forms.Label label7;
     }
 }
 
