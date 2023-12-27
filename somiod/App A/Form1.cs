@@ -99,7 +99,8 @@ namespace App_A
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+           
+                MessageBox.Show(ex.InnerException.Message);
             }
             finally
             {

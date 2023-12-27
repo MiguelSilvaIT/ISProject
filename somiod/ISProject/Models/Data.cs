@@ -8,6 +8,8 @@ namespace ISProject.Models
     public class Data
     {
         public int id { get; set; }
+
+        public string res_type { get; set; }
         public string name { get; set; }
 
         public string content { get; set; }

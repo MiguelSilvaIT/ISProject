@@ -27,13 +27,15 @@ namespace App_B
         {
             //Create ON
             var client = new RestClient(@"http://localhost:59352/");
-            var request = new RestRequest(@"api/somiod/", Method.Post);
-            string contentON = "on";
-            request = new RestRequest(@"api/somiod/TVApp/TVApp Container/data/TVAppDataWhenON", Method.Post);
+            var request = new RestRequest(@"api/somiod/TVApp/TVApp Container", Method.Post);
+           
             request.RequestFormat = DataFormat.Xml;
             request.AddBody(new ISProject.Models.Data
             {
-                content = contentON
+                res_type = "data",
+                content = "On",
+                name = "On",
+
             });
             var response = client.Execute(request);
             MessageBox.Show("Data Status Code: " + response.StatusCode + "\n" +
@@ -44,15 +46,17 @@ namespace App_B
         {
             //Create OFF
             var client = new RestClient(@"http://localhost:59352/");
-            var request = new RestRequest(@"api/somiod/", Method.Post);       
-            string contentOFF = "off";
-            request = new RestRequest(@"api/somiod/TVApp/TVApp Container/data/TVAppDataWhenON", Method.Post);
+            var request = new RestRequest(@"api/somiod/TVApp/TVApp Container", Method.Post);
+
             request.RequestFormat = DataFormat.Xml;
             request.AddBody(new ISProject.Models.Data
             {
-                content = contentOFF
+                res_type = "data",
+                content = "Off",
+                name = "Off",
+
             });
-            var  response = client.Execute(request);
+            var response = client.Execute(request);
             MessageBox.Show("Data Status Code: " + response.StatusCode + "\n" +
                                            "Content: " + response.Content);
 
