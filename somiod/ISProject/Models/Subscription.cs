@@ -11,6 +11,8 @@ namespace ISProject.Models
 
         public int id { get; set; }
         public string name { get; set; }
+
+        public string res_type { get; set; }
         public DateTime creation_dt { get; set; }
 
         public int parent { get; set; }

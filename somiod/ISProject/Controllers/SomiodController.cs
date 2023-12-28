@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
@@ -85,6 +86,46 @@ namespace ISProject.Controllers
             else
             {
                 return BadRequest("Header somiod-discover not found");
+            }
+        }
+
+        [HttpPost]
+        [Route("{appName}/{containerName}")]
+        public IHttpActionResult PostDataOrSubscription(string appName, string containerName)
+        {
+            // Obter o conteúdo da solicitação como XML
+
+            var bodyStream = new StreamReader(HttpContext.Current.Request.InputStream);
+
+            string xml = bodyStream.ReadToEnd();
+
+
+            var xmlDoc = new XmlDocument();
+            xmlDoc.Load(Request.Content.ReadAsStreamAsync().Result);
+
+            // Verificar se o XML contém o elemento "res_type"
+            XmlNode resTypeNode = xmlDoc.SelectSingleNode("//res_type");
+            if (resTypeNode != null)
+            {
+                // Obter o valor do elemento "res_type"
+                string resType = resTypeNode.InnerText;
+
+                // Verificar se o valor é "subscription"
+                if (resType == "subscription")
+                {
+                    // Retornar resultado da assinatura
+                    return PostSubscription(appName, containerName, xml);
+                }
+                else
+                {
+                    // Retornar resultado do contêiner
+                    return PostData(appName, containerName, xml);
+                }
+            }
+            else
+            {
+                // "res_type" não encontrado no XML
+                return BadRequest("Res-type not found");
             }
         }
 
@@ -598,19 +639,21 @@ namespace ISProject.Controllers
         }
 
 
-        [HttpPost]
-        [Route("{appName}/{containerName}")]
-        public IHttpActionResult PostSubscription(String appName, String containerName)
+       
+        public IHttpActionResult PostSubscription(String appName, String containerName, string xml)
         {
             Subscription subscription = new Subscription();
             SqlConnection sqlConnection = null;
+
+
+
 
             string queryString = "INSERT INTO subscription (name, creation_dt, parent, event, endpoint) VALUES (@name, @creation_dt, " +
                 "(SELECT id FROM container WHERE name = @containerName AND parent = (SELECT id FROM application WHERE name = @appName)), @event, @endpoint);";
 
             var bodyStream = new StreamReader(HttpContext.Current.Request.InputStream);
 
-            string xml = bodyStream.ReadToEnd();
+   
 
             XmlDocument doc = new XmlDocument();
 
@@ -619,6 +662,8 @@ namespace ISProject.Controllers
             XmlNode subscriptionName = doc.SelectSingleNode("/Subscription/name");
             XmlNode subscriptionEvent = doc.SelectSingleNode("/Subscription/event_type");
             XmlNode subscriptionEndpoint = doc.SelectSingleNode("/Subscription/endpoint");
+
+
 
             try
             {
@@ -635,6 +680,8 @@ namespace ISProject.Controllers
                 command.Parameters.AddWithValue("@endpoint", subscriptionEndpoint.InnerText);
                 command.Parameters.AddWithValue("@creation_dt", DateTime.Now);
                 SqlDataReader reader = command.ExecuteReader();
+
+                
 
                 return Ok();
             }
@@ -817,55 +864,81 @@ namespace ISProject.Controllers
             return BadRequest();
         }
 
-        public IHttpActionResult PostData(string appName, string containerName, string dataName, string dataContent)
+
+        public IHttpActionResult PostData(string appName, string containerName, string xml)
         {
-            int containerID= -1;
+            SqlConnection sqlConnection = null;
+
+            string checkExistingQuery = "SELECT COUNT(*) FROM data WHERE name = @name AND parent = " +
+                "(SELECT id FROM container WHERE name = @containerName AND parent = " +
+                "(SELECT id FROM application WHERE name = @appName));";
+
+            string insertQuery = "INSERT INTO data (name, content, parent, creation_dt) VALUES " +
+                "(@name, @content, " +
+                "(SELECT id FROM container " +
+                "WHERE name = @containerName AND parent = (SELECT id FROM application WHERE name = @appName)), @creation_dt);";
 
             try
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                XmlDocument doc = new XmlDocument();
+                doc.LoadXml(xml);
+
+                XmlNode dataName = doc.SelectSingleNode("/Data/name");
+                XmlNode dataContent = doc.SelectSingleNode("/Data/content");
+
+                if (dataName == null || dataContent == null)
                 {
-                    conn.Open();
+                    return BadRequest("Invalid XML format. Missing required elements.");
+                }
 
-                    string getContainer = "SELECT id FROM container WHERE name = @containerName and parent = (SELECT id FROM application WHERE name = @appName)";
+                using (sqlConnection = new SqlConnection(connectionString))
+                {
+                    sqlConnection.Open();
 
-                    using (SqlCommand command = new SqlCommand(getContainer, conn))
+                    // Verificar a existência do nome na tabela data
+                    using (SqlCommand checkCommand = new SqlCommand(checkExistingQuery, sqlConnection))
                     {
-                        command.Parameters.AddWithValue("@appName", appName);
-                        command.Parameters.AddWithValue("@containerName", containerName);
+                        checkCommand.Parameters.AddWithValue("@appName", appName);
+                        checkCommand.Parameters.AddWithValue("@containerName", containerName);
+                        checkCommand.Parameters.AddWithValue("@name", dataName.InnerText);
 
-                        using (SqlDataReader reader1 = command.ExecuteReader())
+                        int existingCount = (int)checkCommand.ExecuteScalar();
+
+                        // Se o nome já existe, retornar BadRequest
+                        if (existingCount > 0)
                         {
-                            if (reader1.Read())
-                            {
-                                containerID = reader1.IsDBNull(0) ? -1 : reader1.GetInt32(0);
-                            }
+                            //MANDAR MQTT E RETORNAR
                         }
                     }
 
-                    if (containerID != -1)
+                    // Se o nome não existe, realizar a inserção
+                    using (SqlCommand insertCommand = new SqlCommand(insertQuery, sqlConnection))
                     {
+                        insertCommand.Parameters.AddWithValue("@appName", appName);
+                        insertCommand.Parameters.AddWithValue("@containerName", containerName);
+                        insertCommand.Parameters.AddWithValue("@name", dataName.InnerText);
+                        insertCommand.Parameters.AddWithValue("@content", dataContent.InnerText);
+                        insertCommand.Parameters.AddWithValue("@creation_dt", DateTime.Now);
 
-                        string createData = "INSERT INTO data (name, content, creation_dt, parent) VALUES (@dataName, @content, @creation_dt, @parent)";
-                        SqlCommand command = new SqlCommand(createData, conn);
-
-                        command.Parameters.AddWithValue("@dataName", dataName);
-                        command.Parameters.AddWithValue("@content", dataContent);
-                        command.Parameters.AddWithValue("@creation_dt", DateTime.Now);
-                        command.Parameters.AddWithValue("@parent", containerID);
-
-                        SqlDataReader reader = command.ExecuteReader();
-
-                        return Ok("Data created");
+                        insertCommand.ExecuteNonQuery();
+                        //MANDAR MQTT E RETORNAR
                     }
                 }
+
+                return Ok();
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine(ex.ToString());
                 return BadRequest(ex.Message);
             }
-            return BadRequest();
+            finally
+            {
+                if (sqlConnection != null && sqlConnection.State == ConnectionState.Open)
+                {
+                    sqlConnection.Close();
+                }
+            }
         }
 
         [HttpDelete]
