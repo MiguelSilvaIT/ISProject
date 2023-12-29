@@ -32,59 +32,88 @@ namespace App_B
 
         private void button1_Click(object sender, EventArgs e)
         {
-            //Create ON
-            var client = new RestClient(@"http://localhost:59352/");
-            var request = new RestRequest(@"api/somiod/TVApp/TVApp Container", Method.Post);
-           
-            request.RequestFormat = DataFormat.Xml;
-            request.AddBody(new ISProject.Models.Data
-            {
-                res_type = "data",
-                content = "On",
-                name = "On",
 
-            });
-            var response = client.Execute(request);
-            MessageBox.Show("Data Status Code: " + response.StatusCode + "\n" +
-                                           "Content: " + response.Content);
-            try
+            // Check if any item is selected in the ComboBox
+            if (TopicDrpDown.SelectedItem != null)
             {
-                mClient.Publish(TopicDrpDown.SelectedItem.ToString(), Encoding.UTF8.GetBytes("E ON"));
-                MessageBox.Show("Message Sent");
+
+                //Create ON            
+                var client = new RestClient(@"http://localhost:59352/");
+                var selectedTopic = TopicDrpDown.SelectedItem.ToString();
+                //var request = new RestRequest(@"api/somiod/TVApp/TVApp Container", Method.Post);
+                var request = new RestRequest(@"api/somiod/TVApp/" + selectedTopic, Method.Post);//Para ficar generico de acord com o container selecionado
+
+                request.RequestFormat = DataFormat.Xml;
+                request.AddBody(new ISProject.Models.Data
+                {
+                    res_type = "data",
+                    content = "On",
+                    name = "On",
+
+                });
+                var response = client.Execute(request);
+                MessageBox.Show("Data Status Code: " + response.StatusCode + "\n" +
+                                               "Content: " + response.Content);
+                try
+                {
+                    mClient.Publish(TopicDrpDown.SelectedItem.ToString(), Encoding.UTF8.GetBytes("E ON"));
+                    MessageBox.Show("Message Sent");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error publishing message: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
             }
-            catch (Exception ex)
+            else
             {
-                MessageBox.Show($"Error publishing message: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // Handle the case when no item is selected
+                MessageBox.Show("Please select a topic before publishing.");
             }
-            
+
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            //Create OFF
-            var client = new RestClient(@"http://localhost:59352/");
-            var request = new RestRequest(@"api/somiod/TVApp/TVApp Container", Method.Post);
 
-            request.RequestFormat = DataFormat.Xml;
-            request.AddBody(new ISProject.Models.Data
+            // Check if any item is selected in the ComboBox
+            if (TopicDrpDown.SelectedItem != null)
             {
-                res_type = "data",
-                content = "Off",
-                name = "Off",
 
-            });
-            var response = client.Execute(request);
-            MessageBox.Show("Data Status Code: " + response.StatusCode + "\n" +
-                                           "Content: " + response.Content);
+                //Create OFF
+                var client = new RestClient(@"http://localhost:59352/");
+                var selectedTopic = TopicDrpDown.SelectedItem.ToString();
+                //var request = new RestRequest(@"api/somiod/TVApp/TVApp Container", Method.Post);
+                var request = new RestRequest(@"api/somiod/TVApp/" + selectedTopic, Method.Post);//Para ficar generico de acord com o container selecionado
 
-            try
-            {
-                mClient.Publish(TopicDrpDown.SelectedItem.ToString(), Encoding.UTF8.GetBytes("E OFF"));
-                MessageBox.Show("Message Sent");
+
+                request.RequestFormat = DataFormat.Xml;
+                request.AddBody(new ISProject.Models.Data
+                {
+                    res_type = "data",
+                    content = "Off",
+                    name = "Off",
+
+                });
+                var response = client.Execute(request);
+                MessageBox.Show("Data Status Code: " + response.StatusCode + "\n" +
+                                               "Content: " + response.Content);
+
+                try
+                {
+                    mClient.Publish(TopicDrpDown.SelectedItem.ToString(), Encoding.UTF8.GetBytes("E OFF"));
+                    MessageBox.Show("Message Sent");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error publishing message: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
             }
-            catch (Exception ex)
+            else
             {
-                MessageBox.Show($"Error publishing message: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // Handle the case when no item is selected
+                MessageBox.Show("Please select a topic before publishing.");
             }
         }
 
@@ -225,6 +254,9 @@ namespace App_B
             }
         }
 
-        
+        private void TopicDrpDown_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
