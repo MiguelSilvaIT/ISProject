@@ -16,6 +16,8 @@ using System.Xml.Linq;
 using System.Xml.Serialization;
 using ISProject.Models;
 using Newtonsoft.Json.Linq;
+using uPLibrary.Networking.M2Mqtt;
+using uPLibrary.Networking.M2Mqtt.Messages;
 
 
 namespace ISProject.Controllers
@@ -25,8 +27,10 @@ namespace ISProject.Controllers
     {
 
 
+        MqttClient mClient = new MqttClient(IPAddress.Parse("127.0.0.1"));
+      
 
-        string connectionString =
+    string connectionString =
         System.Configuration.ConfigurationManager.ConnectionStrings["ISProject.Properties.Settings.ConnStr"].ConnectionString;
 
         
@@ -119,7 +123,7 @@ namespace ISProject.Controllers
                 else
                 {
                     // Retornar resultado do contêiner
-                    return PostData(appName, containerName, xml);
+                    return PostData(appName, containerName, xml, containerName);
                 }
             }
             else
@@ -865,9 +869,15 @@ namespace ISProject.Controllers
         }
 
 
-        public IHttpActionResult PostData(string appName, string containerName, string xml)
+        public IHttpActionResult PostData(string appName, string containerName, string xml, string container)
         {
             SqlConnection sqlConnection = null;
+            mClient.Connect(Guid.NewGuid().ToString());
+            if (!mClient.IsConnected)
+            {
+                
+                return BadRequest("Error connecting to message broker...");
+            }
 
             string checkExistingQuery = "SELECT COUNT(*) FROM data WHERE name = @name AND parent = " +
                 "(SELECT id FROM container WHERE name = @containerName AND parent = " +
@@ -904,10 +914,12 @@ namespace ISProject.Controllers
 
                         int existingCount = (int)checkCommand.ExecuteScalar();
 
-                        // Se o nome já existe, retornar BadRequest
+                       
                         if (existingCount > 0)
                         {
-                            //MANDAR MQTT E RETORNAR
+                            mClient.Publish(containerName, Encoding.UTF8.GetBytes(dataContent.InnerText));
+                            return Ok("Message Sent");
+                            
                         }
                     }
 
@@ -921,7 +933,8 @@ namespace ISProject.Controllers
                         insertCommand.Parameters.AddWithValue("@creation_dt", DateTime.Now);
 
                         insertCommand.ExecuteNonQuery();
-                        //MANDAR MQTT E RETORNAR
+                        mClient.Publish(containerName, Encoding.UTF8.GetBytes("E ON"));
+
                     }
                 }
 

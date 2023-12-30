@@ -35,13 +35,6 @@
             this.labelCanal = new System.Windows.Forms.Label();
             this.volumeTXT = new System.Windows.Forms.TextBox();
             this.labelVolume = new System.Windows.Forms.Label();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.submit_container = new System.Windows.Forms.Button();
-            this.textBox4 = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.submit_application = new System.Windows.Forms.Button();
-            this.inputAppName = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
             this.ConnectBTN = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.IPAddresstxt = new System.Windows.Forms.TextBox();
@@ -52,7 +45,6 @@
             this.appDrpDown = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
             this.getTopicsBTN = new System.Windows.Forms.Button();
-            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -60,152 +52,74 @@
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 30F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.SystemColors.Highlight;
-            this.label1.Location = new System.Drawing.Point(56, 7);
-            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label1.Location = new System.Drawing.Point(75, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(250, 46);
+            this.label1.Size = new System.Drawing.Size(316, 58);
             this.label1.TabIndex = 0;
             this.label1.Text = "**Televisão**";
             // 
             // labelEstado
             // 
             this.labelEstado.AutoSize = true;
-            this.labelEstado.Location = new System.Drawing.Point(21, 91);
-            this.labelEstado.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelEstado.Location = new System.Drawing.Point(28, 112);
             this.labelEstado.Name = "labelEstado";
-            this.labelEstado.Size = new System.Drawing.Size(40, 13);
+            this.labelEstado.Size = new System.Drawing.Size(50, 16);
             this.labelEstado.TabIndex = 1;
             this.labelEstado.Text = "Estado";
             // 
             // estadoTXT
             // 
-            this.estadoTXT.Location = new System.Drawing.Point(63, 89);
-            this.estadoTXT.Margin = new System.Windows.Forms.Padding(2);
+            this.estadoTXT.Location = new System.Drawing.Point(84, 110);
+            this.estadoTXT.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.estadoTXT.Name = "estadoTXT";
             this.estadoTXT.ReadOnly = true;
-            this.estadoTXT.Size = new System.Drawing.Size(76, 20);
+            this.estadoTXT.Size = new System.Drawing.Size(100, 22);
             this.estadoTXT.TabIndex = 2;
             // 
             // canalTXT
             // 
-            this.canalTXT.Location = new System.Drawing.Point(63, 124);
-            this.canalTXT.Margin = new System.Windows.Forms.Padding(2);
+            this.canalTXT.Location = new System.Drawing.Point(84, 153);
+            this.canalTXT.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.canalTXT.Name = "canalTXT";
             this.canalTXT.ReadOnly = true;
-            this.canalTXT.Size = new System.Drawing.Size(76, 20);
+            this.canalTXT.Size = new System.Drawing.Size(100, 22);
             this.canalTXT.TabIndex = 4;
             // 
             // labelCanal
             // 
             this.labelCanal.AutoSize = true;
-            this.labelCanal.Location = new System.Drawing.Point(21, 126);
-            this.labelCanal.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelCanal.Location = new System.Drawing.Point(28, 155);
             this.labelCanal.Name = "labelCanal";
-            this.labelCanal.Size = new System.Drawing.Size(34, 13);
+            this.labelCanal.Size = new System.Drawing.Size(42, 16);
             this.labelCanal.TabIndex = 3;
             this.labelCanal.Text = "Canal";
             // 
             // volumeTXT
             // 
-            this.volumeTXT.Location = new System.Drawing.Point(63, 167);
-            this.volumeTXT.Margin = new System.Windows.Forms.Padding(2);
+            this.volumeTXT.Location = new System.Drawing.Point(84, 206);
+            this.volumeTXT.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.volumeTXT.Name = "volumeTXT";
             this.volumeTXT.ReadOnly = true;
-            this.volumeTXT.Size = new System.Drawing.Size(76, 20);
+            this.volumeTXT.Size = new System.Drawing.Size(100, 22);
             this.volumeTXT.TabIndex = 6;
             // 
             // labelVolume
             // 
             this.labelVolume.AutoSize = true;
-            this.labelVolume.Location = new System.Drawing.Point(21, 170);
-            this.labelVolume.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelVolume.Location = new System.Drawing.Point(28, 209);
             this.labelVolume.Name = "labelVolume";
-            this.labelVolume.Size = new System.Drawing.Size(42, 13);
+            this.labelVolume.Size = new System.Drawing.Size(53, 16);
             this.labelVolume.TabIndex = 5;
             this.labelVolume.Text = "Volume";
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.submit_container);
-            this.groupBox1.Controls.Add(this.textBox4);
-            this.groupBox1.Controls.Add(this.label3);
-            this.groupBox1.Controls.Add(this.submit_application);
-            this.groupBox1.Controls.Add(this.inputAppName);
-            this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Location = new System.Drawing.Point(24, 226);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(2);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(2);
-            this.groupBox1.Size = new System.Drawing.Size(309, 188);
-            this.groupBox1.TabIndex = 7;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "groupBox1";
-            // 
-            // submit_container
-            // 
-            this.submit_container.Location = new System.Drawing.Point(100, 101);
-            this.submit_container.Margin = new System.Windows.Forms.Padding(2);
-            this.submit_container.Name = "submit_container";
-            this.submit_container.Size = new System.Drawing.Size(70, 19);
-            this.submit_container.TabIndex = 5;
-            this.submit_container.Text = "Edit";
-            this.submit_container.UseVisualStyleBackColor = true;
-            this.submit_container.Click += new System.EventHandler(this.submit_container_Click);
-            // 
-            // textBox4
-            // 
-            this.textBox4.Location = new System.Drawing.Point(8, 102);
-            this.textBox4.Margin = new System.Windows.Forms.Padding(2);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(89, 20);
-            this.textBox4.TabIndex = 4;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(5, 86);
-            this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(83, 13);
-            this.label3.TabIndex = 3;
-            this.label3.Text = "Container Name";
-            // 
-            // submit_application
-            // 
-            this.submit_application.Location = new System.Drawing.Point(100, 51);
-            this.submit_application.Margin = new System.Windows.Forms.Padding(2);
-            this.submit_application.Name = "submit_application";
-            this.submit_application.Size = new System.Drawing.Size(70, 19);
-            this.submit_application.TabIndex = 2;
-            this.submit_application.Text = "Edit";
-            this.submit_application.UseVisualStyleBackColor = true;
-            this.submit_application.Click += new System.EventHandler(this.submit_application_Click);
-            // 
-            // inputAppName
-            // 
-            this.inputAppName.Location = new System.Drawing.Point(8, 53);
-            this.inputAppName.Margin = new System.Windows.Forms.Padding(2);
-            this.inputAppName.Name = "inputAppName";
-            this.inputAppName.Size = new System.Drawing.Size(89, 20);
-            this.inputAppName.TabIndex = 1;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(5, 37);
-            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(57, 13);
-            this.label2.TabIndex = 0;
-            this.label2.Text = "App Name";
             // 
             // ConnectBTN
             // 
             this.ConnectBTN.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.ConnectBTN.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.ConnectBTN.Location = new System.Drawing.Point(219, 116);
+            this.ConnectBTN.Location = new System.Drawing.Point(292, 143);
+            this.ConnectBTN.Margin = new System.Windows.Forms.Padding(4);
             this.ConnectBTN.Name = "ConnectBTN";
-            this.ConnectBTN.Size = new System.Drawing.Size(88, 23);
+            this.ConnectBTN.Size = new System.Drawing.Size(117, 28);
             this.ConnectBTN.TabIndex = 8;
             this.ConnectBTN.Text = "Connect";
             this.ConnectBTN.UseVisualStyleBackColor = false;
@@ -214,43 +128,48 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(216, 77);
+            this.label4.Location = new System.Drawing.Point(288, 95);
+            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(77, 13);
+            this.label4.Size = new System.Drawing.Size(97, 16);
             this.label4.TabIndex = 9;
             this.label4.Text = "Broker Domain";
             // 
             // IPAddresstxt
             // 
-            this.IPAddresstxt.Location = new System.Drawing.Point(219, 93);
+            this.IPAddresstxt.Location = new System.Drawing.Point(292, 114);
+            this.IPAddresstxt.Margin = new System.Windows.Forms.Padding(4);
             this.IPAddresstxt.Name = "IPAddresstxt";
-            this.IPAddresstxt.Size = new System.Drawing.Size(100, 20);
+            this.IPAddresstxt.Size = new System.Drawing.Size(132, 22);
             this.IPAddresstxt.TabIndex = 10;
             this.IPAddresstxt.Text = "127.0.0.1";
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(471, 174);
+            this.label5.Location = new System.Drawing.Point(628, 214);
+            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(45, 13);
+            this.label5.Size = new System.Drawing.Size(57, 16);
             this.label5.TabIndex = 11;
             this.label5.Text = "Topicos";
             // 
             // TopicDrpDown
             // 
             this.TopicDrpDown.FormattingEnabled = true;
-            this.TopicDrpDown.Location = new System.Drawing.Point(428, 190);
+            this.TopicDrpDown.Location = new System.Drawing.Point(571, 234);
+            this.TopicDrpDown.Margin = new System.Windows.Forms.Padding(4);
             this.TopicDrpDown.Name = "TopicDrpDown";
-            this.TopicDrpDown.Size = new System.Drawing.Size(121, 21);
+            this.TopicDrpDown.Size = new System.Drawing.Size(160, 24);
             this.TopicDrpDown.TabIndex = 12;
             // 
             // SubBTN
             // 
             this.SubBTN.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
-            this.SubBTN.Location = new System.Drawing.Point(410, 217);
+            this.SubBTN.Location = new System.Drawing.Point(547, 267);
+            this.SubBTN.Margin = new System.Windows.Forms.Padding(4);
             this.SubBTN.Name = "SubBTN";
-            this.SubBTN.Size = new System.Drawing.Size(75, 23);
+            this.SubBTN.Size = new System.Drawing.Size(100, 28);
             this.SubBTN.TabIndex = 13;
             this.SubBTN.Text = "Subscribe";
             this.SubBTN.UseVisualStyleBackColor = false;
@@ -259,9 +178,10 @@
             // UnsubBTN
             // 
             this.UnsubBTN.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.UnsubBTN.Location = new System.Drawing.Point(491, 217);
+            this.UnsubBTN.Location = new System.Drawing.Point(655, 267);
+            this.UnsubBTN.Margin = new System.Windows.Forms.Padding(4);
             this.UnsubBTN.Name = "UnsubBTN";
-            this.UnsubBTN.Size = new System.Drawing.Size(75, 23);
+            this.UnsubBTN.Size = new System.Drawing.Size(100, 28);
             this.UnsubBTN.TabIndex = 14;
             this.UnsubBTN.Text = "Unsubscribe";
             this.UnsubBTN.UseVisualStyleBackColor = false;
@@ -270,25 +190,28 @@
             // appDrpDown
             // 
             this.appDrpDown.FormattingEnabled = true;
-            this.appDrpDown.Location = new System.Drawing.Point(428, 93);
+            this.appDrpDown.Location = new System.Drawing.Point(571, 114);
+            this.appDrpDown.Margin = new System.Windows.Forms.Padding(4);
             this.appDrpDown.Name = "appDrpDown";
-            this.appDrpDown.Size = new System.Drawing.Size(121, 21);
+            this.appDrpDown.Size = new System.Drawing.Size(160, 24);
             this.appDrpDown.TabIndex = 15;
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(457, 77);
+            this.label6.Location = new System.Drawing.Point(609, 95);
+            this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(59, 13);
+            this.label6.Size = new System.Drawing.Size(75, 16);
             this.label6.TabIndex = 16;
             this.label6.Text = "Aplicações";
             // 
             // getTopicsBTN
             // 
-            this.getTopicsBTN.Location = new System.Drawing.Point(450, 120);
+            this.getTopicsBTN.Location = new System.Drawing.Point(600, 148);
+            this.getTopicsBTN.Margin = new System.Windows.Forms.Padding(4);
             this.getTopicsBTN.Name = "getTopicsBTN";
-            this.getTopicsBTN.Size = new System.Drawing.Size(75, 23);
+            this.getTopicsBTN.Size = new System.Drawing.Size(100, 28);
             this.getTopicsBTN.TabIndex = 17;
             this.getTopicsBTN.Text = "Get topics";
             this.getTopicsBTN.UseVisualStyleBackColor = true;
@@ -296,9 +219,9 @@
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(697, 463);
+            this.ClientSize = new System.Drawing.Size(929, 333);
             this.Controls.Add(this.getTopicsBTN);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.appDrpDown);
@@ -309,7 +232,6 @@
             this.Controls.Add(this.IPAddresstxt);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.ConnectBTN);
-            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.volumeTXT);
             this.Controls.Add(this.labelVolume);
             this.Controls.Add(this.canalTXT);
@@ -317,12 +239,11 @@
             this.Controls.Add(this.estadoTXT);
             this.Controls.Add(this.labelEstado);
             this.Controls.Add(this.label1);
-            this.Margin = new System.Windows.Forms.Padding(2);
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "Form1";
             this.Text = "App A";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -337,13 +258,6 @@
         private System.Windows.Forms.Label labelCanal;
         private System.Windows.Forms.TextBox volumeTXT;
         private System.Windows.Forms.Label labelVolume;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Button submit_container;
-        private System.Windows.Forms.TextBox textBox4;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Button submit_application;
-        private System.Windows.Forms.TextBox inputAppName;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button ConnectBTN;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox IPAddresstxt;

@@ -80,19 +80,7 @@ namespace App_A
                     MessageBox.Show("Container Status Code: " + response.StatusCode + "\n" +
                                     "Content: " + response.Content);
 
-                    //Create TV subscription
-                    request = new RestRequest(@"api/somiod/TVApp/TVApp Container", Method.Post);
-                    request.RequestFormat = DataFormat.Xml;
-                    request.AddHeader("somiod-discover", "subscription");
-                    request.AddBody(new ISProject.Models.Subscription
-                    {
-                        name = "TVApp Subscription",
-                        endpoint = "mqtt://192.168.1.1:1883",
-                        event_type = "1"
-                    });
-                    response = client.Execute(request);
-                    MessageBox.Show("Subscription Status Code: " + response.StatusCode + "\n" +
-                                                   "Content: " + response.Content);
+                 
                 }
                
                 reader.Close();
@@ -100,7 +88,7 @@ namespace App_A
             catch (Exception ex)
             {
            
-                MessageBox.Show(ex.InnerException.Message);
+                MessageBox.Show(ex.Message);
             }
             finally
             {
@@ -135,39 +123,6 @@ namespace App_A
             }
         }
 
-        private void submit_application_Click(object sender, EventArgs e)
-        {
-            //Create TV application
-            var client = new RestClient(@"http://localhost:59352/");
-            var request = new RestRequest(@"api/somiod/", Method.Post);
-            request.RequestFormat = DataFormat.Xml;
-            request.AddBody(new ISProject.Models.Application
-            { 
-                name = inputAppName.Text 
-            });
-
-            var response = client.Execute(request);
-            MessageBox.Show("Status Code: " + response.StatusCode + "\n" + 
-                            "Content: " + response.Content);
-        }
-
-        private void submit_container_Click(object sender, EventArgs e)
-        {
-            
-            
-            //Create TV container
-            var client = new RestClient(@"http://localhost:59352/");
-            var request = new RestRequest(@"api/somiod/", Method.Post);
-            request.RequestFormat = DataFormat.Xml;
-            request.AddBody(new ISProject.Models.Application
-            {
-                name = inputAppName.Text
-            });
-
-            var response = client.Execute(request);
-            MessageBox.Show("Status Code: " + response.StatusCode + "\n" +
-                            "Content: " + response.Content);
-        }
 
         private void ConnectBTN_Click(object sender, EventArgs e)
         {
@@ -216,9 +171,34 @@ namespace App_A
 
         private void SubBTN_Click(object sender, EventArgs e)
         {
+            
+            //Check if the mClient is connected
+            if (mClient== null)
+            {
+                MessageBox.Show("Please connect to the message broker before subscribing.");
+                return;
+            }
+            
             // Check if any item is selected in the ComboBox
             if (TopicDrpDown.SelectedItem != null)
             {
+                var client = new RestClient(@"http://localhost:59352/");
+
+                //Create  subscription
+                var request = new RestRequest(@"api/somiod/TVApp/TVApp Container", Method.Post);
+                request.RequestFormat = DataFormat.Xml;
+                request.AddHeader("somiod-discover", "subscription");
+                request.AddBody(new ISProject.Models.Subscription
+                {
+                    name = "TVApp Subscription",
+                    endpoint = "mqtt://192.168.1.1:1883",
+                    event_type = "1",
+                    res_type = "subscription"
+                });
+                var response = client.Execute(request);
+                MessageBox.Show("Subscription Status Code: " + response.StatusCode + "\n" +
+                                               "Content: " + response.Content);
+
                 mClient.MqttMsgPublishReceived += client_MqttMsgPublishReceived;
 
                 byte[] qosLevel = { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE };
@@ -243,6 +223,7 @@ namespace App_A
             {
                 string[] topic = { TopicDrpDown.SelectedItem.ToString() };
                 mClient.Unsubscribe(topic); //Put this in a button to see notif!
+                MessageBox.Show("Topic Unsubscribed");
                 return;
             }
             MessageBox.Show("There is no connection created");
@@ -272,6 +253,21 @@ namespace App_A
                 reader.Close();
                 sqlConnection.Close();
             }
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            //delete all subscriptions from database
+            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+            {
+                string deleteSubs = "DELETE FROM subscription";
+
+                SqlCommand command = new SqlCommand(deleteSubs, sqlConnection);
+                sqlConnection.Open();
+                command.ExecuteNonQuery();
+                sqlConnection.Close();
+            }
+
         }
     }
 }

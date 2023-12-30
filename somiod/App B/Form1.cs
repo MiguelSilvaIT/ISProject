@@ -19,7 +19,7 @@ namespace App_B
     public partial class Form1 : Form
     {
         string connectionString =
-            System.Configuration.ConfigurationManager.ConnectionStrings["App_B.Properties.Settings.connStr"].ConnectionString;
+            System.Configuration.ConfigurationManager.ConnectionStrings["App_B.Properties.Settings.ConnString"].ConnectionString;
 
         MqttClient mClient = null;
         List<string> mStrApp = new List<string>();
@@ -47,22 +47,22 @@ namespace App_B
                 request.AddBody(new ISProject.Models.Data
                 {
                     res_type = "data",
-                    content = "On",
+                    content = "E On",
                     name = "On",
 
                 });
                 var response = client.Execute(request);
-                MessageBox.Show("Data Status Code: " + response.StatusCode + "\n" +
-                                               "Content: " + response.Content);
-                try
-                {
-                    mClient.Publish(TopicDrpDown.SelectedItem.ToString(), Encoding.UTF8.GetBytes("E ON"));
-                    MessageBox.Show("Message Sent");
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Error publishing message: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                //DEBUG MessageBox.Show("Data Status Code: " + response.StatusCode + "\n" +
+                                               //"Content: " + response.Content);
+                //try
+                //{
+                //    mClient.Publish(TopicDrpDown.SelectedItem.ToString(), Encoding.UTF8.GetBytes("E ON"));
+                //    MessageBox.Show("Message Sent");
+                //}
+                //catch (Exception ex)
+                //{
+                //    MessageBox.Show($"Error publishing message: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //}
 
             }
             else
@@ -91,23 +91,13 @@ namespace App_B
                 request.AddBody(new ISProject.Models.Data
                 {
                     res_type = "data",
-                    content = "Off",
+                    content = "E Off",
                     name = "Off",
 
                 });
                 var response = client.Execute(request);
-                MessageBox.Show("Data Status Code: " + response.StatusCode + "\n" +
-                                               "Content: " + response.Content);
-
-                try
-                {
-                    mClient.Publish(TopicDrpDown.SelectedItem.ToString(), Encoding.UTF8.GetBytes("E OFF"));
-                    MessageBox.Show("Message Sent");
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Error publishing message: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                //DEBUG MessageBox.Show("Data Status Code: " + response.StatusCode + "\n" +
+                                               //"Content: " + response.Content);
 
             }
             else
@@ -134,18 +124,18 @@ namespace App_B
             request.AddBody(new ISProject.Models.Data
             {
                 res_type = "data",
-                content = selectedVolume.ToString(),
+                content = "V" + selectedVolume.ToString(),
                 name = "Volume of: " + selectedContainer,
 
             });
             var response = client.Execute(request);
-            MessageBox.Show("Data Status Code: " + response.StatusCode + "\n" +
-                                           "Content: " + response.Content);
+            //DEBUG MessageBox.Show("Data Status Code: " + response.StatusCode + "\n" +
+                                           //"Content: " + response.Content);
             try
             {
-                string val = "V " + selectedVolume;
-                mClient.Publish(TopicDrpDown.SelectedItem.ToString(), Encoding.UTF8.GetBytes(val));
-                MessageBox.Show("Message Sent");
+                //string val = "V " + selectedVolume;
+                //mClient.Publish(TopicDrpDown.SelectedItem.ToString(), Encoding.UTF8.GetBytes(val));
+                //MessageBox.Show("Message Sent");
             }
             catch (Exception ex)
             {
@@ -169,23 +159,23 @@ namespace App_B
             request.AddBody(new ISProject.Models.Data
             {
                 res_type = "data",
-                content = selectedCanal.ToString(),
+                content = "C" + selectedCanal.ToString(),
                 name = "Canal of: " + selectedContainer,
 
             });
             var response = client.Execute(request);
             MessageBox.Show("Data Status Code: " + response.StatusCode + "\n" +
                                            "Content: " + response.Content);
-            try
-            {
-                string val = "C " + numericUpDown2.Value.ToString();
-                mClient.Publish(TopicDrpDown.SelectedItem.ToString(), Encoding.UTF8.GetBytes(val));
-                MessageBox.Show("Message Sent");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error publishing message: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            //try
+            //{
+            //    string val = "C " + numericUpDown2.Value.ToString();
+            //    mClient.Publish(TopicDrpDown.SelectedItem.ToString(), Encoding.UTF8.GetBytes(val));
+            //    MessageBox.Show("Message Sent");
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show($"Error publishing message: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //}
         }
 
         private void Form1_Load(object sender, EventArgs e)
