@@ -91,9 +91,30 @@ namespace App_B
         //Volume
         private void conVolume_Click(object sender, EventArgs e)
         {
+
+            //Create Volume
+            var selectedVolume = numericUpDown1.Value;
+            var selectedApp = appDrpDown.SelectedItem.ToString();
+            var selectedContainer = TopicDrpDown.SelectedItem.ToString();
+
+            var client = new RestClient(@"http://localhost:59352/");
+
+            var request = new RestRequest(@"api/somiod/" +selectedApp +"/" + selectedContainer, Method.Post);
+
+            request.RequestFormat = DataFormat.Xml;
+            request.AddBody(new ISProject.Models.Data
+            {
+                res_type = "data",
+                content = selectedVolume.ToString(),
+                name = "Volume of: " + selectedContainer,
+
+            });
+            var response = client.Execute(request);
+            MessageBox.Show("Data Status Code: " + response.StatusCode + "\n" +
+                                           "Content: " + response.Content);
             try
             {
-                string val = "V " + numericUpDown1.Value.ToString();
+                string val = "V " + selectedVolume;
                 mClient.Publish(TopicDrpDown.SelectedItem.ToString(), Encoding.UTF8.GetBytes(val));
                 MessageBox.Show("Message Sent");
             }
@@ -106,6 +127,26 @@ namespace App_B
         //Canal
         private void conCanal_Click(object sender, EventArgs e)
         {
+            //Create Canal
+            var selectedCanal = numericUpDown2.Value;
+            var selectedApp = appDrpDown.SelectedItem.ToString();
+            var selectedContainer = TopicDrpDown.SelectedItem.ToString();
+
+            var client = new RestClient(@"http://localhost:59352/");
+
+            var request = new RestRequest(@"api/somiod/" + selectedApp + "/" + selectedContainer, Method.Post);
+
+            request.RequestFormat = DataFormat.Xml;
+            request.AddBody(new ISProject.Models.Data
+            {
+                res_type = "data",
+                content = selectedCanal.ToString(),
+                name = "Canal of: " + selectedContainer,
+
+            });
+            var response = client.Execute(request);
+            MessageBox.Show("Data Status Code: " + response.StatusCode + "\n" +
+                                           "Content: " + response.Content);
             try
             {
                 string val = "C " + numericUpDown2.Value.ToString();
