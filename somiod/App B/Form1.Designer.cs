@@ -197,6 +197,7 @@
             this.TopicDrpDown.Name = "TopicDrpDown";
             this.TopicDrpDown.Size = new System.Drawing.Size(121, 21);
             this.TopicDrpDown.TabIndex = 19;
+            this.TopicDrpDown.SelectedIndexChanged += new System.EventHandler(this.TopicDrpDown_SelectedIndexChanged);
             // 
             // label5
             // 
