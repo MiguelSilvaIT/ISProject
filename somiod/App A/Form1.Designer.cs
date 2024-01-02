@@ -45,6 +45,9 @@
             this.appDrpDown = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
             this.getTopicsBTN = new System.Windows.Forms.Button();
+            this.createAppAndContainers = new System.Windows.Forms.Button();
+            this.btn_delete_app_cont = new System.Windows.Forms.Button();
+            this.button_disoverApps = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -116,7 +119,7 @@
             // 
             this.ConnectBTN.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.ConnectBTN.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.ConnectBTN.Location = new System.Drawing.Point(292, 143);
+            this.ConnectBTN.Location = new System.Drawing.Point(291, 143);
             this.ConnectBTN.Margin = new System.Windows.Forms.Padding(4);
             this.ConnectBTN.Name = "ConnectBTN";
             this.ConnectBTN.Size = new System.Drawing.Size(117, 28);
@@ -147,17 +150,17 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(628, 214);
+            this.label5.Location = new System.Drawing.Point(533, 238);
             this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(57, 16);
+            this.label5.Size = new System.Drawing.Size(71, 16);
             this.label5.TabIndex = 11;
-            this.label5.Text = "Topicos";
+            this.label5.Text = "Containers";
             // 
             // TopicDrpDown
             // 
             this.TopicDrpDown.FormattingEnabled = true;
-            this.TopicDrpDown.Location = new System.Drawing.Point(571, 234);
+            this.TopicDrpDown.Location = new System.Drawing.Point(612, 235);
             this.TopicDrpDown.Margin = new System.Windows.Forms.Padding(4);
             this.TopicDrpDown.Name = "TopicDrpDown";
             this.TopicDrpDown.Size = new System.Drawing.Size(160, 24);
@@ -166,7 +169,7 @@
             // SubBTN
             // 
             this.SubBTN.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
-            this.SubBTN.Location = new System.Drawing.Point(547, 267);
+            this.SubBTN.Location = new System.Drawing.Point(591, 267);
             this.SubBTN.Margin = new System.Windows.Forms.Padding(4);
             this.SubBTN.Name = "SubBTN";
             this.SubBTN.Size = new System.Drawing.Size(100, 28);
@@ -178,7 +181,7 @@
             // UnsubBTN
             // 
             this.UnsubBTN.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.UnsubBTN.Location = new System.Drawing.Point(655, 267);
+            this.UnsubBTN.Location = new System.Drawing.Point(699, 267);
             this.UnsubBTN.Margin = new System.Windows.Forms.Padding(4);
             this.UnsubBTN.Name = "UnsubBTN";
             this.UnsubBTN.Size = new System.Drawing.Size(100, 28);
@@ -190,7 +193,7 @@
             // appDrpDown
             // 
             this.appDrpDown.FormattingEnabled = true;
-            this.appDrpDown.Location = new System.Drawing.Point(571, 114);
+            this.appDrpDown.Location = new System.Drawing.Point(612, 116);
             this.appDrpDown.Margin = new System.Windows.Forms.Padding(4);
             this.appDrpDown.Name = "appDrpDown";
             this.appDrpDown.Size = new System.Drawing.Size(160, 24);
@@ -208,20 +211,53 @@
             // 
             // getTopicsBTN
             // 
-            this.getTopicsBTN.Location = new System.Drawing.Point(600, 148);
+            this.getTopicsBTN.Location = new System.Drawing.Point(612, 203);
             this.getTopicsBTN.Margin = new System.Windows.Forms.Padding(4);
             this.getTopicsBTN.Name = "getTopicsBTN";
-            this.getTopicsBTN.Size = new System.Drawing.Size(100, 28);
+            this.getTopicsBTN.Size = new System.Drawing.Size(165, 28);
             this.getTopicsBTN.TabIndex = 17;
-            this.getTopicsBTN.Text = "Get topics";
+            this.getTopicsBTN.Text = "Discover Containers";
             this.getTopicsBTN.UseVisualStyleBackColor = true;
             this.getTopicsBTN.Click += new System.EventHandler(this.getTopicsBTN_Click);
+            // 
+            // createAppAndContainers
+            // 
+            this.createAppAndContainers.Location = new System.Drawing.Point(571, 9);
+            this.createAppAndContainers.Name = "createAppAndContainers";
+            this.createAppAndContainers.Size = new System.Drawing.Size(104, 83);
+            this.createAppAndContainers.TabIndex = 18;
+            this.createAppAndContainers.Text = "Create App And Containers";
+            this.createAppAndContainers.UseVisualStyleBackColor = true;
+            this.createAppAndContainers.Click += new System.EventHandler(this.createAppAndContainers_Click);
+            // 
+            // btn_delete_app_cont
+            // 
+            this.btn_delete_app_cont.Location = new System.Drawing.Point(700, 12);
+            this.btn_delete_app_cont.Name = "btn_delete_app_cont";
+            this.btn_delete_app_cont.Size = new System.Drawing.Size(99, 80);
+            this.btn_delete_app_cont.TabIndex = 19;
+            this.btn_delete_app_cont.Text = "Delete App and Containers";
+            this.btn_delete_app_cont.UseVisualStyleBackColor = true;
+            this.btn_delete_app_cont.Click += new System.EventHandler(this.btn_delete_app_cont_Click);
+            // 
+            // button_disoverApps
+            // 
+            this.button_disoverApps.Location = new System.Drawing.Point(612, 143);
+            this.button_disoverApps.Name = "button_disoverApps";
+            this.button_disoverApps.Size = new System.Drawing.Size(160, 23);
+            this.button_disoverApps.TabIndex = 20;
+            this.button_disoverApps.Text = "Discover Apps";
+            this.button_disoverApps.UseVisualStyleBackColor = true;
+            this.button_disoverApps.Click += new System.EventHandler(this.button_disoverApps_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(929, 333);
+            this.Controls.Add(this.button_disoverApps);
+            this.Controls.Add(this.btn_delete_app_cont);
+            this.Controls.Add(this.createAppAndContainers);
             this.Controls.Add(this.getTopicsBTN);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.appDrpDown);
@@ -268,6 +304,9 @@
         private System.Windows.Forms.ComboBox appDrpDown;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Button getTopicsBTN;
+        private System.Windows.Forms.Button createAppAndContainers;
+        private System.Windows.Forms.Button btn_delete_app_cont;
+        private System.Windows.Forms.Button button_disoverApps;
     }
 }
 

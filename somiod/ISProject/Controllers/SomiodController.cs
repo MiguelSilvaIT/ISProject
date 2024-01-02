@@ -18,6 +18,8 @@ using ISProject.Models;
 using Newtonsoft.Json.Linq;
 using uPLibrary.Networking.M2Mqtt;
 using uPLibrary.Networking.M2Mqtt.Messages;
+using RestSharp;
+using System.Reflection;
 
 
 namespace ISProject.Controllers
@@ -138,7 +140,7 @@ namespace ISProject.Controllers
 
         [HttpGet]
         [Route("")]
-        public IEnumerable<Application> GetAllApplications()
+        public IHttpActionResult GetAllApplications()
         {
             List<Application> applications = new List<Application>();
             SqlConnection conn = null;
@@ -175,7 +177,22 @@ namespace ISProject.Controllers
             }
 
 
-            return applications;
+            //// Converte a lista de Application para XML
+            var xmlSerializer = new XmlSerializer(typeof(List<Application>));
+            StringWriter sw = new StringWriter();
+            xmlSerializer.Serialize(sw, applications);
+            string xmlResult = sw.ToString();
+
+
+
+            //string xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><applications><application><name>MinhaApp1</name><creation_dt>2024-01-01T12:00:00</creation_dt><id>123456</id></application><application><name>MinhaApp2</name><creation_dt>2024-01-02T12:00:00</creation_dt><id>789012</id></application></applications>";
+            // Retorna os dados em formato XML
+            // Retorna os dados em formato XML
+            var response = new HttpResponseMessage(HttpStatusCode.OK);
+            response.Content = new StringContent(xmlResult, Encoding.UTF8, "application/xml");
+
+            return ResponseMessage(response);
+
         }
 
         public IHttpActionResult GetApplication(String appName)
@@ -280,10 +297,17 @@ namespace ISProject.Controllers
 
                 return Ok();
             }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.ToString());
-                return BadRequest(ex.Message);
+            catch (SqlException ex) 
+            { 
+                if (ex.Number == 2627 || ex.Number == 2601) 
+                { 
+                    return BadRequest("Application  already exists."); 
+                } 
+                else 
+                { 
+                    System.Diagnostics.Debug.WriteLine(ex.ToString()); 
+                    return BadRequest(ex.Message); 
+                } 
             }
 
         }
@@ -311,7 +335,7 @@ namespace ISProject.Controllers
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine(ex.ToString());
-                return BadRequest(ex.Message);
+                return Conflict();
             }
         }
 
@@ -401,7 +425,21 @@ namespace ISProject.Controllers
             }
 
 
-            return Ok(containers);
+            //// Converte a lista de Application para XML
+            var xmlSerializer = new XmlSerializer(typeof(List<Container>));
+            StringWriter sw = new StringWriter();
+            xmlSerializer.Serialize(sw, containers);
+            string xmlResult = sw.ToString();
+
+
+
+            //string xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><applications><application><name>MinhaApp1</name><creation_dt>2024-01-01T12:00:00</creation_dt><id>123456</id></application><application><name>MinhaApp2</name><creation_dt>2024-01-02T12:00:00</creation_dt><id>789012</id></application></applications>";
+            // Retorna os dados em formato XML
+            // Retorna os dados em formato XML
+            var response = new HttpResponseMessage(HttpStatusCode.OK);
+            response.Content = new StringContent(xmlResult, Encoding.UTF8, "application/xml");
+
+            return ResponseMessage(response);
         }
 
    
@@ -491,14 +529,24 @@ namespace ISProject.Controllers
 
                 return Ok();
             }
-            catch (Exception ex)
+            catch (SqlException ex)
             {
-                System.Diagnostics.Debug.WriteLine(ex.ToString());
-                return BadRequest(ex.Message);
+                // Check if the exception is related to a primary key violation
+                if (ex.Number == 2627 || ex.Number == 2601)
+                {
+                    // Error numbers 2627 and 2601 are associated with unique constraint violations
+                    return BadRequest("Container  already exists.");
+                }
+                else
+                {
+                    // Handle other SQL exceptions
+                    System.Diagnostics.Debug.WriteLine(ex.ToString());
+                    return BadRequest(ex.Message);
+                }
             }
         }
 
-        //Update Application
+        //Update Container
         [HttpPut]
         [Route("{appName}/{name}")]
         public IHttpActionResult UpdateContainer(String name)
@@ -536,6 +584,33 @@ namespace ISProject.Controllers
                 System.Diagnostics.Debug.WriteLine(ex.ToString());
                 return BadRequest(ex.Message);
             }
+        }
+
+        //delete Container
+        [HttpDelete]
+        [Route("{appName}/{name}")]
+        public IHttpActionResult DeleteContainer(String appName, String name)
+        {
+            SqlConnection sqlConnection = null;
+            string queryString = "DELETE FROM container WHERE name = @name AND parent = (SELECT id FROM application WHERE name = @appName); ";
+
+            try
+            {
+                sqlConnection = new SqlConnection(connectionString);
+                sqlConnection.Open();
+
+                SqlCommand command = new SqlCommand(queryString, sqlConnection);
+                command.Parameters.AddWithValue("@name", name);
+                command.Parameters.AddWithValue("@appName", appName);
+                SqlDataReader reader = command.ExecuteReader();
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.ToString());
+                return Conflict();
+            }   
         }
 
         #endregion
@@ -689,10 +764,20 @@ namespace ISProject.Controllers
 
                 return Ok();
             }
-            catch (Exception ex)
+            catch (SqlException ex)
             {
-                System.Diagnostics.Debug.WriteLine(ex.ToString());
-                return BadRequest(ex.Message);
+                // Check if the exception is related to a primary key violation
+                if (ex.Number == 2627 || ex.Number == 2601)
+                {
+                    // Error numbers 2627 and 2601 are associated with unique constraint violations
+                    return BadRequest("Subscription  already exists.");
+                }
+                else
+                {
+                    // Handle other SQL exceptions
+                    System.Diagnostics.Debug.WriteLine(ex.ToString());
+                    return BadRequest(ex.Message);
+                }
             }
 
         }

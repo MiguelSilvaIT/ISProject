@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -12,6 +13,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.UI.WebControls;
 using System.Windows.Forms;
+using System.Xml;
+using System.Xml.Linq;
+using System.Xml.Serialization;
 using uPLibrary.Networking.M2Mqtt;
 
 namespace App_B
@@ -34,12 +38,12 @@ namespace App_B
         {
 
             // Check if any item is selected in the ComboBox
-            if (TopicDrpDown.SelectedItem != null)
+            if (ContainerDrpDown.SelectedItem != null)
             {
 
                 //Create ON            
                 var client = new RestClient(@"http://localhost:59352/");
-                var selectedTopic = TopicDrpDown.SelectedItem.ToString();
+                var selectedTopic = ContainerDrpDown.SelectedItem.ToString();
                 //var request = new RestRequest(@"api/somiod/TVApp/TVApp Container", Method.Post);
                 var request = new RestRequest(@"api/somiod/TVApp/" + selectedTopic, Method.Post);//Para ficar generico de acord com o container selecionado
 
@@ -69,6 +73,7 @@ namespace App_B
             {
                 // Handle the case when no item is selected
                 MessageBox.Show("Please select a topic before publishing.");
+                return;
             }
 
         }
@@ -77,12 +82,12 @@ namespace App_B
         {
 
             // Check if any item is selected in the ComboBox
-            if (TopicDrpDown.SelectedItem != null)
+            if (ContainerDrpDown.SelectedItem != null)
             {
 
                 //Create OFF
                 var client = new RestClient(@"http://localhost:59352/");
-                var selectedTopic = TopicDrpDown.SelectedItem.ToString();
+                var selectedTopic = ContainerDrpDown.SelectedItem.ToString();
                 //var request = new RestRequest(@"api/somiod/TVApp/TVApp Container", Method.Post);
                 var request = new RestRequest(@"api/somiod/TVApp/" + selectedTopic, Method.Post);//Para ficar generico de acord com o container selecionado
 
@@ -114,7 +119,7 @@ namespace App_B
             //Create Volume
             var selectedVolume = numericUpDown1.Value;
             var selectedApp = appDrpDown.SelectedItem.ToString();
-            var selectedContainer = TopicDrpDown.SelectedItem.ToString();
+            var selectedContainer = ContainerDrpDown.SelectedItem.ToString();
 
             var client = new RestClient(@"http://localhost:59352/");
 
@@ -149,7 +154,7 @@ namespace App_B
             //Create Canal
             var selectedCanal = numericUpDown2.Value;
             var selectedApp = appDrpDown.SelectedItem.ToString();
-            var selectedContainer = TopicDrpDown.SelectedItem.ToString();
+            var selectedContainer = ContainerDrpDown.SelectedItem.ToString();
 
             var client = new RestClient(@"http://localhost:59352/");
 
@@ -219,32 +224,32 @@ namespace App_B
                 sqlConnection.Close();
             }
 
-            //Applications
-            try
-            {
-                using (sqlConnection = new SqlConnection(connectionString))
-                {
-                    string getApps = "SELECT name FROM application";
+            ////Applications
+            //try
+            //{
+            //    using (sqlConnection = new SqlConnection(connectionString))
+            //    {
+            //        string getApps = "SELECT name FROM application";
 
-                    SqlCommand command = new SqlCommand(getApps, sqlConnection);
-                    sqlConnection.Open();
-                    SqlDataReader reader = command.ExecuteReader();
+            //        SqlCommand command = new SqlCommand(getApps, sqlConnection);
+            //        sqlConnection.Open();
+            //        SqlDataReader reader = command.ExecuteReader();
 
-                    while (reader.Read())
-                    {
-                        mStrApp.Add((string)reader["name"]);
+            //        while (reader.Read())
+            //        {
+            //            mStrApp.Add((string)reader["name"]);
 
-                    }
-                    appDrpDown.DataSource = mStrApp;
-                    reader.Close();
-                    sqlConnection.Close();
-                }
-            }
-            catch (Exception)
-            {
+            //        }
+            //        appDrpDown.DataSource = mStrApp;
+            //        reader.Close();
+            //        sqlConnection.Close();
+            //    }
+            //}
+            //catch (Exception)
+            //{
 
-                throw;
-            }
+            //    throw;
+            //}
         }
 
         private void connBTN_Click(object sender, EventArgs e)
@@ -261,31 +266,85 @@ namespace App_B
 
         private void getTopicsBTN_Click(object sender, EventArgs e)
         {
-            string appName = appDrpDown.SelectedItem.ToString();
-            mStrContainer.Clear();
-            TopicDrpDown.DataSource = null;
-            TopicDrpDown.Items.Clear();
-            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+            
+            if(appDrpDown.SelectedItem ==null)
             {
-                string getContainers = "SELECT name FROM container WHERE parent = (SELECT id FROM application WHERE name = @name)";
-
-                SqlCommand command = new SqlCommand(getContainers, sqlConnection);
-                command.Parameters.AddWithValue("@name", appName);
-
-                sqlConnection.Open();
-                SqlDataReader reader = command.ExecuteReader();
-
-                while (reader.Read())
-                {
-                    mStrContainer.Add((string)reader["name"]);
-                }
-                TopicDrpDown.DataSource = mStrContainer;
-                reader.Close();
-                sqlConnection.Close();
+                MessageBox.Show("Please select an application");
+                return;
             }
+            
+            
+            List<string> containerNames = new List<string>();
+
+            var client = new RestClient(@"http://localhost:59352/");
+
+            var request = new RestRequest(@"api/somiod/{application}", Method.Get);
+            request.RequestFormat = DataFormat.Xml;
+            request.AddUrlSegment("application", appDrpDown.SelectedItem.ToString());
+            request.AddHeader("somiod-discover", "container");
+            var response = client.Execute(request);
+
+            string xml = response.Content;
+
+            XmlDocument doc = new XmlDocument();
+
+            //remove first and last parameter from app.Content
+            //remove first character
+            doc.LoadXml(xml);
+
+            XmlNodeList nameNodes = doc.SelectNodes("//Container/name/text()");
+
+            foreach (XmlNode nameNode in nameNodes)
+            {
+                string nameValue = nameNode.Value;
+                //add nameValue to appNames
+                containerNames.Add(nameValue);
+            }
+
+            ContainerDrpDown.DataSource = containerNames;
+
         }
 
         private void TopicDrpDown_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void app_discover_Click(object sender, EventArgs e)
+        {
+
+            List<string> applicationNames = new List<string>();
+
+            var client = new RestClient(@"http://localhost:59352/");
+
+            var request = new RestRequest(@"api/somiod/" , Method.Get);
+            request.RequestFormat = DataFormat.Xml;
+
+            request.AddHeader("somiod-discover", "application");
+            var response = client.Execute(request);
+
+            string xml = response.Content;
+
+            XmlDocument doc = new XmlDocument();
+
+            //remove first and last parameter from app.Content
+            //remove first character
+            doc.LoadXml(xml);
+
+            XmlNodeList nameNodes = doc.SelectNodes("//Application/name/text()");
+
+            foreach (XmlNode nameNode in nameNodes)
+            {
+                string nameValue = nameNode.Value;
+                //add nameValue to appNames
+                applicationNames.Add(nameValue);
+            }
+
+            appDrpDown.DataSource = applicationNames;
+
+        }
+
+        private void label4_Click(object sender, EventArgs e)
         {
 
         }

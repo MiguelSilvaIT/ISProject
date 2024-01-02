@@ -8,6 +8,10 @@ using uPLibrary.Networking.M2Mqtt.Messages;
 using System.Net;
 using System.Collections.Generic;
 using System.Text;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.Security.Cryptography;
+using System.Web.UI.WebControls.WebParts;
+using System.Xml;
 
 namespace App_A
 {
@@ -34,93 +38,68 @@ namespace App_A
 
             //check if TVApp already exists in the DB
 
-            SqlConnection sqlConnection = null;
+            //SqlConnection sqlConnection = null;
 
-            string queryString = "SELECT * FROM application WHERE name = 'TVApp'";
+            //string queryString = "SELECT * FROM application WHERE name = 'TVApp'";
 
-            try
-            {
-                sqlConnection = new SqlConnection(connectionString);
-                SqlCommand command = new SqlCommand(queryString, sqlConnection);
-                sqlConnection.Open();
-                SqlDataReader reader = command.ExecuteReader();
+            //try
+            //{
+            //    sqlConnection = new SqlConnection(connectionString);
+            //    SqlCommand command = new SqlCommand(queryString, sqlConnection);
+            //    sqlConnection.Open();
+            //    SqlDataReader reader = command.ExecuteReader();
 
-                if (!reader.HasRows)
-                {
-                    //Create TV application
-                    var client = new RestClient(@"http://localhost:59352/");
-                    var request = new RestRequest(@"api/somiod/", Method.Post);
-                    request.RequestFormat = DataFormat.Xml;
-                    request.AddBody(new ISProject.Models.Application
-                    {
-                        name = "TVApp",
-                    });
+            //    if (!reader.HasRows)
+            //    {
+            //        ////Create TV application
+            //        //var client = new RestClient(@"http://localhost:59352/");
+            //        //var request = new RestRequest(@"api/somiod/", Method.Post);
+            //        //request.RequestFormat = DataFormat.Xml;
+            //        //request.AddBody(new ISProject.Models.Application
+            //        //{
+            //        //    name = "TVApp",
+            //        //});
 
-                    var response = client.Execute(request);
-                    MessageBox.Show("Application Status Code: " + response.StatusCode + "\n" +
-                                    "Content: " + response.Content);
+            //        //var response = client.Execute(request);
+            //        //MessageBox.Show("Application Status Code: " + response.StatusCode + "\n" +
+            //        //                "Content: " + response.Content);
 
-                    //Create TV container
-                    request = new RestRequest(@"api/somiod/TVApp", Method.Post);
-                    request.RequestFormat = DataFormat.Xml;
-                    request.AddHeader("somiod-discover", "container");
-                    request.AddBody(new ISProject.Models.Container
-                    {
-                        name = "TVApp Container"
-                    });
-                    //see request content
-                    var body = request.Parameters.FirstOrDefault(p => p.Type == ParameterType.RequestBody);
+            //        ////Create TV container
+            //        //request = new RestRequest(@"api/somiod/TVApp", Method.Post);
+            //        //request.RequestFormat = DataFormat.Xml;
+            //        //request.AddHeader("somiod-discover", "container");
+            //        //request.AddBody(new ISProject.Models.Container
+            //        //{
+            //        //    name = "TVApp Container"
+            //        });
+            //        //see request content
+            //        var body = request.Parameters.FirstOrDefault(p => p.Type == ParameterType.RequestBody);
 
-                    Console.WriteLine("CurrentBody={0}", body.Value);
-
-
+            //        Console.WriteLine("CurrentBody={0}", body.Value);
 
 
-                    response = client.Execute(request);
-                    MessageBox.Show("Container Status Code: " + response.StatusCode + "\n" +
-                                    "Content: " + response.Content);
+
+
+            //        response = client.Execute(request);
+            //        MessageBox.Show("Container Status Code: " + response.StatusCode + "\n" +
+            //                        "Content: " + response.Content);
 
                  
-                }
+            //    }
                
-                reader.Close();
-            }
-            catch (Exception ex)
-            {
+            //    reader.Close();
+            //}
+            //catch (Exception ex)
+            //{
            
-                MessageBox.Show(ex.Message);
-            }
-            finally
-            {
-                sqlConnection.Close();
-            }
+            //    MessageBox.Show(ex.Message);
+            //}
+            //finally
+            //{
+            //    sqlConnection.Close();
+            //}
 
-            //Applications
-            try
-            {
-                using (sqlConnection = new SqlConnection(connectionString))
-                {
-                    string getApps = "SELECT name FROM application";
-
-                    SqlCommand command = new SqlCommand(getApps, sqlConnection);
-                    sqlConnection.Open();
-                    SqlDataReader reader = command.ExecuteReader();
-
-                    while (reader.Read())
-                    {
-                        mStrApp.Add((string)reader["name"]);
-
-                    }
-                    appDrpDown.DataSource = mStrApp;
-                    reader.Close();
-                    sqlConnection.Close();
-                }
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
+    
         }
 
 
@@ -196,8 +175,15 @@ namespace App_A
                     res_type = "subscription"
                 });
                 var response = client.Execute(request);
-                MessageBox.Show("Subscription Status Code: " + response.StatusCode + "\n" +
-                                               "Content: " + response.Content);
+                
+                if(response.StatusCode != HttpStatusCode.OK)
+                {
+                    MessageBox.Show("Subscription Status Code: " + response.StatusCode + "\n" +
+                                                                      "Content: " + response.Content);
+                    return;
+                }
+
+                
 
                 mClient.MqttMsgPublishReceived += client_MqttMsgPublishReceived;
 
@@ -223,6 +209,14 @@ namespace App_A
             {
                 string[] topic = { TopicDrpDown.SelectedItem.ToString() };
                 mClient.Unsubscribe(topic); //Put this in a button to see notif!
+                //delete from database
+                var client = new RestClient(@"http://localhost:59352/");
+                var request = new RestRequest(@"api/somiod/TVApp/TVApp Container/TVApp Subscription", Method.Delete);
+                request.RequestFormat = DataFormat.Xml;
+                request.AddHeader("somiod-discover", "subscription");
+                var response = client.Execute(request);
+                MessageBox.Show("Subscription Status Code: " + response.StatusCode + "\n" +
+                                                                  "Content: " + response.Content);
                 MessageBox.Show("Topic Unsubscribed");
                 return;
             }
@@ -231,28 +225,41 @@ namespace App_A
 
         private void getTopicsBTN_Click(object sender, EventArgs e)
         {
-            string appName = appDrpDown.SelectedItem.ToString();
-            mStrContainer.Clear();
-            TopicDrpDown.DataSource = null;
-            TopicDrpDown.Items.Clear();
-            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+            if (appDrpDown.SelectedItem == null)
             {
-                string getContainers = "SELECT name FROM container WHERE parent = (SELECT id FROM application WHERE name = @name)";
-
-                SqlCommand command = new SqlCommand(getContainers, sqlConnection);
-                command.Parameters.AddWithValue("@name", appName);
-
-                sqlConnection.Open();
-                SqlDataReader reader = command.ExecuteReader();
-
-                while (reader.Read())
-                {
-                    mStrContainer.Add((string)reader["name"]);
-                }
-                TopicDrpDown.DataSource = mStrContainer;
-                reader.Close();
-                sqlConnection.Close();
+                MessageBox.Show("Please select an application");
+                return;
             }
+
+
+            List<string> containerNames = new List<string>();
+
+            var client = new RestClient(@"http://localhost:59352/");
+
+            var request = new RestRequest(@"api/somiod/{application}", Method.Get);
+            request.RequestFormat = DataFormat.Xml;
+            request.AddUrlSegment("application", appDrpDown.SelectedItem.ToString());
+            request.AddHeader("somiod-discover", "container");
+            var response = client.Execute(request);
+
+            string xml = response.Content;
+
+            XmlDocument doc = new XmlDocument();
+
+            //remove first and last parameter from app.Content
+            //remove first character
+            doc.LoadXml(xml);
+
+            XmlNodeList nameNodes = doc.SelectNodes("//Container/name/text()");
+
+            foreach (XmlNode nameNode in nameNodes)
+            {
+                string nameValue = nameNode.Value;
+                //add nameValue to appNames
+                containerNames.Add(nameValue);
+            }
+
+            TopicDrpDown.DataSource = containerNames;
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -268,6 +275,145 @@ namespace App_A
                 sqlConnection.Close();
             }
 
+        }
+
+        private void createAppAndContainers_Click(object sender, EventArgs e)
+        {
+            //Create TV application
+            var client = new RestClient(@"http://localhost:59352/");
+            var request = new RestRequest(@"api/somiod/", Method.Post);
+            request.RequestFormat = DataFormat.Xml;
+            request.AddBody(new ISProject.Models.Application
+            {
+                name = "TVApp",
+            });
+
+            var response = client.Execute(request);
+            if(response.StatusCode == HttpStatusCode.OK)
+            {
+                MessageBox.Show("Application TVApp created");
+
+            }
+            else 
+            {
+                MessageBox.Show("Application Status Code: " + response.StatusCode + "\n" +
+                                                 "Content: " + response.Content);
+                return;
+            }
+                
+            
+            //Create TV container
+            request = new RestRequest(@"api/somiod/TVApp", Method.Post);
+            request.RequestFormat = DataFormat.Xml;
+            request.AddHeader("somiod-discover", "container");
+            request.AddBody(new ISProject.Models.Container
+            {
+                name = "TVApp Container"
+            });
+            response = client.Execute(request);
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                MessageBox.Show("Container TVApp Container created");
+
+            }
+            else
+            {
+                MessageBox.Show("Container Status Code: " + response.StatusCode + "\n" +
+                                                                    "Content: " + response.Content);
+                return;
+            }
+        }
+
+
+        private void btn_delete_app_cont_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var client = new RestClient(@"http://localhost:59352/");
+
+
+                // Delete TV container
+                var request = new RestRequest(@"api/somiod/TVApp/TVApp Container", Method.Delete);
+                var response = client.Execute(request);
+
+                // Check if the deletion was successful (status code 200 OK)
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    MessageBox.Show("Container TVApp Container deleted successfully.");
+                }
+                else
+                {
+                    // Check if the deletion failed due to dependencies (status code 409 Conflict)
+                    if (response.StatusCode == HttpStatusCode.Conflict)
+                    {
+                        MessageBox.Show("Cannot delete container. It has dependent resources.");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Container deletion failed. Status Code: " + response.StatusCode + "\n" +
+                                        "Content: " + response.Content);
+                    }
+                }
+
+                // Delete TV application
+                 request = new RestRequest(@"api/somiod/TVApp", Method.Delete);
+                 response = client.Execute(request);
+
+                // Check if the deletion was successful (status code 200 OK)
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    MessageBox.Show("Application TVApp deleted successfully.");
+                }
+                else
+                {
+                    // Check if the deletion failed due to dependencies (status code 409 Conflict)
+                    if (response.StatusCode == HttpStatusCode.Conflict)
+                    {
+                        MessageBox.Show("Cannot delete application. It has dependent resources.");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Application deletion failed. Status Code: " + response.StatusCode + "\n" +
+                                        "Content: " + response.Content);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred: " + ex.Message);
+            }
+        }
+
+        private void button_disoverApps_Click(object sender, EventArgs e)
+        {
+            List<string> applicationNames = new List<string>();
+
+            var client = new RestClient(@"http://localhost:59352/");
+
+            var request = new RestRequest(@"api/somiod/", Method.Get);
+            request.RequestFormat = DataFormat.Xml;
+
+            request.AddHeader("somiod-discover", "application");
+            var response = client.Execute(request);
+
+            string xml = response.Content;
+
+            XmlDocument doc = new XmlDocument();
+
+            //remove first and last parameter from app.Content
+            //remove first character
+            doc.LoadXml(xml);
+
+            XmlNodeList nameNodes = doc.SelectNodes("//Application/name/text()");
+
+            foreach (XmlNode nameNode in nameNodes)
+            {
+                string nameValue = nameNode.Value;
+                //add nameValue to appNames
+                applicationNames.Add(nameValue);
+            }
+
+            appDrpDown.DataSource = applicationNames;
         }
     }
 }
