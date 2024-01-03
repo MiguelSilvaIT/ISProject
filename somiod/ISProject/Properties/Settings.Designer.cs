@@ -26,9 +26,8 @@ namespace ISProject.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=\"C:\\Users\\migui\\Documents\\Mig" +
-            "uel Silva\\Uni\\3_Ano\\IS\\Projeto\\ISProject\\somiod\\ISProject\\App_Data\\SOMIOD_DB.mdf" +
-            "\";Integrated Security=True")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\\SOMIOD_DB.mdf" +
+            ";Integrated Security=True")]
         public string ConnStr {
             get {
                 return ((string)(this["ConnStr"]));

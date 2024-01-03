@@ -32,7 +32,7 @@ namespace ISProject.Controllers
         MqttClient mClient = new MqttClient(IPAddress.Parse("127.0.0.1"));
       
 
-    string connectionString =
+        string connectionString =
         System.Configuration.ConfigurationManager.ConnectionStrings["ISProject.Properties.Settings.ConnStr"].ConnectionString;
 
         
@@ -68,7 +68,7 @@ namespace ISProject.Controllers
 
         [HttpGet]
         [Route("{appName}/{containerName}")]
-        public IHttpActionResult discoverContainerOrSubscriptions(String appName, String containerName)
+        public IHttpActionResult discoverContainerOrSubscriptions(String appName, String containerName) //or all data
         {
             //get header of request
             var headers = Request.Headers;
@@ -82,6 +82,10 @@ namespace ISProject.Controllers
                 {
                     //return subscription
                     return GetAllSubscriptions(appName, containerName);
+                }
+                else if(somiodDiscover == "data")
+                {
+                    return GetALLData(appName, containerName);
                 }
                 else
                 {
@@ -663,7 +667,21 @@ namespace ISProject.Controllers
             }
 
 
-            return Ok(subscriptions);
+            //// Converte a lista de Subscrições para XML
+            var xmlSerializer = new XmlSerializer(typeof(List<Subscription>));
+            StringWriter sw = new StringWriter();
+            xmlSerializer.Serialize(sw, subscriptions);
+            string xmlResult = sw.ToString();
+
+
+
+            //string xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><applications><application><name>MinhaApp1</name><creation_dt>2024-01-01T12:00:00</creation_dt><id>123456</id></application><application><name>MinhaApp2</name><creation_dt>2024-01-02T12:00:00</creation_dt><id>789012</id></application></applications>";
+            // Retorna os dados em formato XML
+            // Retorna os dados em formato XML
+            var response = new HttpResponseMessage(HttpStatusCode.OK);
+            response.Content = new StringContent(xmlResult, Encoding.UTF8, "application/xml");
+
+            return ResponseMessage(response);
         }
 
         [HttpGet]
@@ -783,7 +801,7 @@ namespace ISProject.Controllers
         }
 
         [HttpDelete]
-        [Route("{appName}/{containerName}/{subscriptionName}")]
+        [Route("{appName}/{containerName}/subscription/{subscriptionName}")]
         public IHttpActionResult DeleteSubscription(String appName, String containerName, String subscriptionName)
         {
             SqlConnection sqlConnection = null;
@@ -815,13 +833,14 @@ namespace ISProject.Controllers
         #region Data
 
         //Get all data from 1 container
-        [HttpGet]
-        [Route("{appName}/{containerName}/data")]
+        
         public IHttpActionResult GetALLData(string appName, string containerName)
         {
             List<Data> data = new List<Data>();
             int containerID = -1;
-            
+            var response = new HttpResponseMessage(HttpStatusCode.OK);
+
+
             try
             {
                 using (SqlConnection conn = new SqlConnection(connectionString))
@@ -870,18 +889,37 @@ namespace ISProject.Controllers
                         }
                     }
                 }
+
+                if (data.Count() > 0)
+                {
+
+
+                    var xmlSerializer = new XmlSerializer(typeof(List<Data>));
+                    StringWriter sw = new StringWriter();
+                    xmlSerializer.Serialize(sw, data);
+                    string xmlResult = sw.ToString();
+
+
+
+                    //string xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><applications><application><name>MinhaApp1</name><creation_dt>2024-01-01T12:00:00</creation_dt><id>123456</id></application><application><name>MinhaApp2</name><creation_dt>2024-01-02T12:00:00</creation_dt><id>789012</id></application></applications>";
+                    // Retorna os dados em formato XML
+                    // Retorna os dados em formato XML
+                    response.Content = new StringContent(xmlResult, Encoding.UTF8, "application/xml");
+
+                    return ResponseMessage(response);
+                }
+                response = new HttpResponseMessage(HttpStatusCode.NotFound);
+                response.Content = new StringContent("No data found", Encoding.UTF8, "application/xml");
+                return ResponseMessage(response);
             }
             catch (Exception ex)
             {
-                // Log or handle the exception appropriately
-                throw;
+                
+                response = new HttpResponseMessage(HttpStatusCode.BadRequest);
+                response.Content = new StringContent(ex.Message, Encoding.UTF8, "application/xml");
+                return ResponseMessage(response);
             }
 
-            if (data.Count() > 0)
-            {
-                return Ok(data);
-            }
-            return BadRequest("Error retrieving data");
         }
 
         [HttpGet]

@@ -415,5 +415,10 @@ namespace App_A
 
             appDrpDown.DataSource = applicationNames;
         }
+
+        private void estadoTXT_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

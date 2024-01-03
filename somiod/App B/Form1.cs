@@ -348,5 +348,157 @@ namespace App_B
         {
 
         }
+
+        private void btn_discover_data_Click(object sender, EventArgs e)
+        {
+
+            comboBoxSubscription.DataSource = null;
+            comboBoxSubscription.Items.Clear();
+
+            if (ContainerDrpDown.SelectedItem == null)
+            {
+                MessageBox.Show("Please select a container");
+                return;
+            }
+            
+            List<string> dataNames = new List<string>();
+            var client = new RestClient(@"http://localhost:59352/");
+            var request = new RestRequest(@"api/somiod/" + appDrpDown.SelectedItem.ToString() + "/" + ContainerDrpDown.SelectedItem.ToString(), Method.Get);
+            request.RequestFormat = DataFormat.Xml;
+            request.AddHeader("somiod-discover", "data");
+            var response = client.Execute(request);
+            if(response.StatusCode == HttpStatusCode.NotFound)
+            {
+                MessageBox.Show("No data found");
+                return;
+            }
+
+            string xml = response.Content;
+            XmlDocument doc = new XmlDocument();
+            doc.LoadXml(xml);
+
+            XmlNodeList nameNodes = doc.SelectNodes("//Data/name/text()");
+            foreach (XmlNode nameNode in nameNodes)
+            {
+                string nameValue = nameNode.Value;
+                //add nameValue to appNames
+                dataNames.Add(nameValue);
+            }
+
+            comboBoxData.DataSource = dataNames;
+        }
+
+        private void btn_delete_data_Click(object sender, EventArgs e)
+        {
+            
+            if(comboBoxData.SelectedItem == null)
+            {
+                MessageBox.Show("Please select a data");
+                return;
+            }
+
+            try
+            {
+                var client = new RestClient(@"http://localhost:59352/");
+
+
+                
+                var request = new RestRequest(@"api/somiod/"+ appDrpDown.SelectedItem.ToString() + "/" + ContainerDrpDown.SelectedItem.ToString() + "/data/" + comboBoxData.SelectedItem.ToString(), Method.Delete);
+                var response = client.Execute(request);
+
+                // Check if the deletion was successful (status code 200 OK)
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                   
+                    MessageBox.Show("Data "+ comboBoxData.SelectedItem.ToString() + " deleted successfully.");
+                    btn_discover_data_Click(sender, e);
+                }
+                else
+                {
+                   
+                    MessageBox.Show("Container deletion failed. Status Code: " + response.StatusCode + "\n" +
+                                    "Content: " + response.Content);
+                    
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
+
+        private void button_discoverSubscriptions_Click(object sender, EventArgs e)
+        {
+
+            comboBoxSubscription.DataSource = null;
+            comboBoxSubscription.Items.Clear();
+            if (ContainerDrpDown.SelectedItem == null)
+            {
+                MessageBox.Show("Please select a container");
+                return;
+            }
+
+            List<string> subscriptionNames = new List<string>();
+            var client = new RestClient(@"http://localhost:59352/");
+            var request = new RestRequest(@"api/somiod/" + appDrpDown.SelectedItem.ToString() + "/" + ContainerDrpDown.SelectedItem.ToString(), Method.Get);
+            request.RequestFormat = DataFormat.Xml;
+            request.AddHeader("somiod-discover", "subscription");
+            var response = client.Execute(request);
+
+            string xml = response.Content;
+            XmlDocument doc = new XmlDocument();
+            doc.LoadXml(xml);
+
+            XmlNodeList nameNodes = doc.SelectNodes("//Subscription/name/text()");
+            foreach (XmlNode nameNode in nameNodes)
+            {
+                string nameValue = nameNode.Value;
+                //add nameValue to appNames
+                subscriptionNames.Add(nameValue);
+            }
+
+            comboBoxSubscription.DataSource = subscriptionNames;
+        }
+
+        private void btn_delete_subscription_Click(object sender, EventArgs e)
+        {
+            if (comboBoxSubscription.SelectedItem == null)
+            {
+                MessageBox.Show("Please select a subscription");
+                return;
+            }
+
+            try
+            {
+                var client = new RestClient(@"http://localhost:59352/");
+
+
+
+                var request = new RestRequest(@"api/somiod/" + appDrpDown.SelectedItem.ToString() + "/" + ContainerDrpDown.SelectedItem.ToString() + "/subscription/" + comboBoxSubscription.SelectedItem.ToString(), Method.Delete);
+                var response = client.Execute(request);
+
+                // Check if the deletion was successful (status code 200 OK)
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+
+                    MessageBox.Show("Subscription " + comboBoxSubscription.SelectedItem.ToString() + " deleted successfully.");
+                    button_discoverSubscriptions_Click(sender, e);
+                }
+                else
+                {
+
+                    MessageBox.Show("Container deletion failed. Status Code: " + response.StatusCode + "\n" +
+                                    "Content: " + response.Content);
+
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
     }
 }

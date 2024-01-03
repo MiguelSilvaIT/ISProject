@@ -48,14 +48,14 @@
             this.conVolume = new System.Windows.Forms.Button();
             this.conCanal = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.comboBoxData = new System.Windows.Forms.ComboBox();
-            this.comboBox_data = new System.Windows.Forms.Label();
-            this.btn_discover_data = new System.Windows.Forms.Button();
-            this.btn_delete_data = new System.Windows.Forms.Button();
             this.btn_delete_subscription = new System.Windows.Forms.Button();
             this.button_discoverSubscriptions = new System.Windows.Forms.Button();
             this.label_subscription = new System.Windows.Forms.Label();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.comboBoxSubscription = new System.Windows.Forms.ComboBox();
+            this.btn_delete_data = new System.Windows.Forms.Button();
+            this.btn_discover_data = new System.Windows.Forms.Button();
+            this.comboBox_data = new System.Windows.Forms.Label();
+            this.comboBoxData = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -279,25 +279,74 @@
             this.groupBox2.Controls.Add(this.btn_delete_subscription);
             this.groupBox2.Controls.Add(this.button_discoverSubscriptions);
             this.groupBox2.Controls.Add(this.label_subscription);
-            this.groupBox2.Controls.Add(this.comboBox1);
+            this.groupBox2.Controls.Add(this.comboBoxSubscription);
             this.groupBox2.Controls.Add(this.btn_delete_data);
             this.groupBox2.Controls.Add(this.btn_discover_data);
             this.groupBox2.Controls.Add(this.comboBox_data);
             this.groupBox2.Controls.Add(this.comboBoxData);
             this.groupBox2.Location = new System.Drawing.Point(218, 315);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(420, 152);
+            this.groupBox2.Size = new System.Drawing.Size(462, 152);
             this.groupBox2.TabIndex = 28;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Discover";
             // 
-            // comboBoxData
+            // btn_delete_subscription
             // 
-            this.comboBoxData.FormattingEnabled = true;
-            this.comboBoxData.Location = new System.Drawing.Point(24, 41);
-            this.comboBoxData.Name = "comboBoxData";
-            this.comboBoxData.Size = new System.Drawing.Size(121, 24);
-            this.comboBoxData.TabIndex = 0;
+            this.btn_delete_subscription.Location = new System.Drawing.Point(227, 110);
+            this.btn_delete_subscription.Name = "btn_delete_subscription";
+            this.btn_delete_subscription.Size = new System.Drawing.Size(176, 23);
+            this.btn_delete_subscription.TabIndex = 7;
+            this.btn_delete_subscription.Text = "Delete Subscription";
+            this.btn_delete_subscription.UseVisualStyleBackColor = true;
+            this.btn_delete_subscription.Click += new System.EventHandler(this.btn_delete_subscription_Click);
+            // 
+            // button_discoverSubscriptions
+            // 
+            this.button_discoverSubscriptions.Location = new System.Drawing.Point(227, 71);
+            this.button_discoverSubscriptions.Name = "button_discoverSubscriptions";
+            this.button_discoverSubscriptions.Size = new System.Drawing.Size(176, 23);
+            this.button_discoverSubscriptions.TabIndex = 6;
+            this.button_discoverSubscriptions.Text = "Discover Subscription";
+            this.button_discoverSubscriptions.UseVisualStyleBackColor = true;
+            this.button_discoverSubscriptions.Click += new System.EventHandler(this.button_discoverSubscriptions_Click);
+            // 
+            // label_subscription
+            // 
+            this.label_subscription.AutoSize = true;
+            this.label_subscription.Location = new System.Drawing.Point(224, 22);
+            this.label_subscription.Name = "label_subscription";
+            this.label_subscription.Size = new System.Drawing.Size(81, 16);
+            this.label_subscription.TabIndex = 5;
+            this.label_subscription.Text = "Subscription";
+            // 
+            // comboBoxSubscription
+            // 
+            this.comboBoxSubscription.FormattingEnabled = true;
+            this.comboBoxSubscription.Location = new System.Drawing.Point(227, 41);
+            this.comboBoxSubscription.Name = "comboBoxSubscription";
+            this.comboBoxSubscription.Size = new System.Drawing.Size(176, 24);
+            this.comboBoxSubscription.TabIndex = 4;
+            // 
+            // btn_delete_data
+            // 
+            this.btn_delete_data.Location = new System.Drawing.Point(24, 110);
+            this.btn_delete_data.Name = "btn_delete_data";
+            this.btn_delete_data.Size = new System.Drawing.Size(118, 27);
+            this.btn_delete_data.TabIndex = 3;
+            this.btn_delete_data.Text = "Delete Data";
+            this.btn_delete_data.UseVisualStyleBackColor = true;
+            this.btn_delete_data.Click += new System.EventHandler(this.btn_delete_data_Click);
+            // 
+            // btn_discover_data
+            // 
+            this.btn_discover_data.Location = new System.Drawing.Point(24, 71);
+            this.btn_discover_data.Name = "btn_discover_data";
+            this.btn_discover_data.Size = new System.Drawing.Size(121, 23);
+            this.btn_discover_data.TabIndex = 2;
+            this.btn_discover_data.Text = "Discover Data";
+            this.btn_discover_data.UseVisualStyleBackColor = true;
+            this.btn_discover_data.Click += new System.EventHandler(this.btn_discover_data_Click);
             // 
             // comboBox_data
             // 
@@ -308,58 +357,13 @@
             this.comboBox_data.TabIndex = 1;
             this.comboBox_data.Text = "Data";
             // 
-            // btn_discover_data
+            // comboBoxData
             // 
-            this.btn_discover_data.Location = new System.Drawing.Point(24, 71);
-            this.btn_discover_data.Name = "btn_discover_data";
-            this.btn_discover_data.Size = new System.Drawing.Size(121, 23);
-            this.btn_discover_data.TabIndex = 2;
-            this.btn_discover_data.Text = "Discover Data";
-            this.btn_discover_data.UseVisualStyleBackColor = true;
-            // 
-            // btn_delete_data
-            // 
-            this.btn_delete_data.Location = new System.Drawing.Point(24, 110);
-            this.btn_delete_data.Name = "btn_delete_data";
-            this.btn_delete_data.Size = new System.Drawing.Size(118, 27);
-            this.btn_delete_data.TabIndex = 3;
-            this.btn_delete_data.Text = "Delete Data";
-            this.btn_delete_data.UseVisualStyleBackColor = true;
-            // 
-            // btn_delete_subscription
-            // 
-            this.btn_delete_subscription.Location = new System.Drawing.Point(190, 110);
-            this.btn_delete_subscription.Name = "btn_delete_subscription";
-            this.btn_delete_subscription.Size = new System.Drawing.Size(162, 27);
-            this.btn_delete_subscription.TabIndex = 7;
-            this.btn_delete_subscription.Text = "Delete Subscription";
-            this.btn_delete_subscription.UseVisualStyleBackColor = true;
-            // 
-            // button_discoverSubscriptions
-            // 
-            this.button_discoverSubscriptions.Location = new System.Drawing.Point(190, 71);
-            this.button_discoverSubscriptions.Name = "button_discoverSubscriptions";
-            this.button_discoverSubscriptions.Size = new System.Drawing.Size(162, 23);
-            this.button_discoverSubscriptions.TabIndex = 6;
-            this.button_discoverSubscriptions.Text = "Discover Subscription";
-            this.button_discoverSubscriptions.UseVisualStyleBackColor = true;
-            // 
-            // label_subscription
-            // 
-            this.label_subscription.AutoSize = true;
-            this.label_subscription.Location = new System.Drawing.Point(187, 22);
-            this.label_subscription.Name = "label_subscription";
-            this.label_subscription.Size = new System.Drawing.Size(81, 16);
-            this.label_subscription.TabIndex = 5;
-            this.label_subscription.Text = "Subscription";
-            // 
-            // comboBox1
-            // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(190, 41);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(162, 24);
-            this.comboBox1.TabIndex = 4;
+            this.comboBoxData.FormattingEnabled = true;
+            this.comboBoxData.Location = new System.Drawing.Point(24, 41);
+            this.comboBoxData.Name = "comboBoxData";
+            this.comboBoxData.Size = new System.Drawing.Size(121, 24);
+            this.comboBoxData.TabIndex = 0;
             // 
             // Form1
             // 
@@ -419,12 +423,12 @@
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Label comboBox_data;
         private System.Windows.Forms.ComboBox comboBoxData;
-        private System.Windows.Forms.Button btn_delete_subscription;
         private System.Windows.Forms.Button button_discoverSubscriptions;
         private System.Windows.Forms.Label label_subscription;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox comboBoxSubscription;
         private System.Windows.Forms.Button btn_delete_data;
         private System.Windows.Forms.Button btn_discover_data;
+        private System.Windows.Forms.Button btn_delete_subscription;
     }
 }
 

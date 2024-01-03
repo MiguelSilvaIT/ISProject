@@ -78,6 +78,7 @@
             this.estadoTXT.ReadOnly = true;
             this.estadoTXT.Size = new System.Drawing.Size(100, 22);
             this.estadoTXT.TabIndex = 2;
+            this.estadoTXT.TextChanged += new System.EventHandler(this.estadoTXT_TextChanged);
             // 
             // canalTXT
             // 
