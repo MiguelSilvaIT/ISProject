@@ -170,17 +170,17 @@ namespace App_A
                 request.AddBody(new ISProject.Models.Subscription
                 {
                     name = "TVApp Subscription",
-                    endpoint = "mqtt://192.168.1.1:1883",
+                    endpoint = IPAddresstxt.Text,
                     event_type = "1",
                     res_type = "subscription"
                 });
+                MessageBox.Show(IPAddresstxt.Text);
                 var response = client.Execute(request);
                 
                 if(response.StatusCode != HttpStatusCode.OK)
                 {
                     MessageBox.Show("Subscription Status Code: " + response.StatusCode + "\n" +
                                                                       "Content: " + response.Content);
-                    return;
                 }
 
                 

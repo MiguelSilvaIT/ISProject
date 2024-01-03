@@ -27,9 +27,6 @@ namespace ISProject.Controllers
     [RoutePrefix("api/somiod")]
     public class SomiodController : ApiController
     {
-
-
-        MqttClient mClient = new MqttClient(IPAddress.Parse("127.0.0.1"));
       
 
         string connectionString =
@@ -742,9 +739,6 @@ namespace ISProject.Controllers
             Subscription subscription = new Subscription();
             SqlConnection sqlConnection = null;
 
-
-
-
             string queryString = "INSERT INTO subscription (name, creation_dt, parent, event, endpoint) VALUES (@name, @creation_dt, " +
                 "(SELECT id FROM container WHERE name = @containerName AND parent = (SELECT id FROM application WHERE name = @appName)), @event, @endpoint);";
 
@@ -760,7 +754,7 @@ namespace ISProject.Controllers
             XmlNode subscriptionEvent = doc.SelectSingleNode("/Subscription/event_type");
             XmlNode subscriptionEndpoint = doc.SelectSingleNode("/Subscription/endpoint");
 
-
+            
 
             try
             {
@@ -995,12 +989,6 @@ namespace ISProject.Controllers
         public IHttpActionResult PostData(string appName, string containerName, string xml, string container)
         {
             SqlConnection sqlConnection = null;
-            mClient.Connect(Guid.NewGuid().ToString());
-            if (!mClient.IsConnected)
-            {
-                
-                return BadRequest("Error connecting to message broker...");
-            }
 
             string checkExistingQuery = "SELECT COUNT(*) FROM data WHERE name = @name AND parent = " +
                 "(SELECT id FROM container WHERE name = @containerName AND parent = " +
@@ -1040,9 +1028,7 @@ namespace ISProject.Controllers
                        
                         if (existingCount > 0)
                         {
-                            mClient.Publish(containerName, Encoding.UTF8.GetBytes(dataContent.InnerText));
-                            return Ok("Message Sent");
-                            
+                            return sendNotifications(appName, containerName, dataContent.InnerText);
                         }
                     }
 
@@ -1056,8 +1042,7 @@ namespace ISProject.Controllers
                         insertCommand.Parameters.AddWithValue("@creation_dt", DateTime.Now);
 
                         insertCommand.ExecuteNonQuery();
-                        mClient.Publish(containerName, Encoding.UTF8.GetBytes("E ON"));
-
+                        sendNotifications(appName, containerName, "E ON");
                     }
                 }
 
@@ -1075,6 +1060,73 @@ namespace ISProject.Controllers
                     sqlConnection.Close();
                 }
             }
+        }
+
+        public IHttpActionResult sendNotifications (string appName, string containerName, string dataContent)
+        {
+            SqlConnection sqlConnection = null;
+            int containerID = -1;
+
+            string getContainerID = "SELECT id FROM container WHERE name = @containerName AND parent = (SELECT id FROM application WHERE name = @appName)";
+
+            try
+            { 
+                
+                using (sqlConnection = new SqlConnection(connectionString))
+                {
+                    sqlConnection.Open();
+                    using (SqlCommand sqlCommand = new SqlCommand(getContainerID, sqlConnection))
+                    {
+                        sqlCommand.Parameters.AddWithValue("@appName", appName);
+                        sqlCommand.Parameters.AddWithValue("@containerName", containerName);
+
+                        containerID = (int)sqlCommand.ExecuteScalar();
+
+                    }
+
+                }
+                string ipAddressString = null;
+                string getipAddress = "SELECT endpoint FROM subscription WHERE parent = @containerID";
+
+                using (sqlConnection = new SqlConnection(connectionString))
+                {
+                    sqlConnection.Open();
+                    using (SqlCommand sqlCommand = new SqlCommand(getipAddress, sqlConnection))
+                    {
+                        sqlCommand.Parameters.AddWithValue("@containerID", containerID);
+
+                        object result = sqlCommand.ExecuteScalar();
+
+                        // Check if the result is not null before converting to string
+                        if (result != null)
+                        {
+                            ipAddressString = result.ToString();
+                        }
+
+                    }
+                }
+
+                MqttClient mClient = new MqttClient(IPAddress.Parse(ipAddressString));
+
+                mClient.Connect(Guid.NewGuid().ToString());
+                if (!mClient.IsConnected)
+                {
+                    return BadRequest("Error connecting to message broker...");
+                }
+
+                mClient.Publish(containerName, Encoding.UTF8.GetBytes(dataContent));
+                return Ok("Message Sent");
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
+
         }
 
         [HttpDelete]
